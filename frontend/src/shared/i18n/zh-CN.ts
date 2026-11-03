@@ -85,11 +85,23 @@ export const zhCN: Record<string, string> = {
   'room.workspace': '待命区',
   'room.datacenter': '数据中心',
 
-  // ========== 内置 Agent ==========
+  // ========== 内置 Agent (PRIM8 Productions) ==========
   'builtin.dispatcher': '调度员',
   'builtin.dispatcher.role': '任务分配与调度',
-  'builtin.assistant': '助理',
-  'builtin.assistant.role': '通用工作助理',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': '办公室统筹与协调',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / 曲库与创意甄选',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': '创意方向与艺人发展',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': '录音制作与项目推进',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': '音乐 / 音频制作人',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': '演出与发行运营',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': '混音 / 声音与信号链',
   'builtin.data_engineer': '数据工程师',
   'builtin.data_engineer.role': '数据管理与上传',
 

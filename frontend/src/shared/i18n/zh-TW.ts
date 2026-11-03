@@ -85,11 +85,23 @@ export const zhTW: Record<string, string> = {
   'room.workspace': '待命區',
   'room.datacenter': '資料中心',
 
-  // ========== 內建 Agent ==========
+  // ========== 內建 Agent (PRIM8 Productions) ==========
   'builtin.dispatcher': '調度員',
   'builtin.dispatcher.role': '任務分配與調度',
-  'builtin.assistant': '助理',
-  'builtin.assistant.role': '通用工作助理',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': '辦公室統籌與協調',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / 曲庫與創意甄選',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': '創意方向與藝人發展',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': '錄音製作與專案推進',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': '音樂 / 音訊製作人',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': '演出與發行營運',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': '混音 / 聲音與訊號鏈',
   'builtin.data_engineer': '資料工程師',
   'builtin.data_engineer.role': '資料管理與上傳',
 

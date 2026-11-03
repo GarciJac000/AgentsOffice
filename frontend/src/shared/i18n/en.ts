@@ -85,11 +85,23 @@ export const en: Record<string, string> = {
   'room.workspace': 'Workspace',
   'room.datacenter': 'Data Center',
 
-  // ========== Built-in Agents ==========
+  // ========== Built-in Agents (PRIM8 Productions) ==========
   'builtin.dispatcher': 'Dispatcher',
   'builtin.dispatcher.role': 'Task routing & dispatch',
-  'builtin.assistant': 'Assistant',
-  'builtin.assistant.role': 'General-purpose helper',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': 'Office lead & coordinator',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / creative repertoire',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': 'Creative direction & artist development',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': 'Session producer & project momentum',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': 'Music / audio producer',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': 'Performance & release operations',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': 'Mix / sound & signal chain',
   'builtin.data_engineer': 'Data Engineer',
   'builtin.data_engineer.role': 'Data management & upload',
 

@@ -85,11 +85,23 @@ export const ja: Record<string, string> = {
   'room.workspace': 'ワークスペース',
   'room.datacenter': 'データセンター',
 
-  // ========== 組み込みエージェント ==========
+  // ========== 組み込みエージェント (PRIM8 Productions) ==========
   'builtin.dispatcher': 'ディスパッチャー',
   'builtin.dispatcher.role': 'タスク振分・調整',
-  'builtin.assistant': 'アシスタント',
-  'builtin.assistant.role': '汎用ワークアシスタント',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': 'オフィス統括・コーディネーター',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / レパートリー',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': 'クリエイティブ方向・アーティスト開発',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': 'セッション制作・プロジェクト推進',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': '音楽 / オーディオ・プロデューサー',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': 'パフォーマンス・リリース運営',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': 'ミックス / サウンド＆信号系',
   'builtin.data_engineer': 'データエンジニア',
   'builtin.data_engineer.role': 'データ管理・アップロード',
 

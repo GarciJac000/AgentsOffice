@@ -1,0 +1,79 @@
+{
+  "office": {
+    "name": "PRIM8 Productions",
+    "source": "https://www.skydive.com/o/eJJbcZSS5f5Gi3KrCi1u_g",
+    "share_token": "eJJbcZSS5f5Gi3KrCi1u_g",
+    "organization_id": "01a19fa1-e1e9-7cf4-9e34-ea630b5c037f",
+    "brand": {
+      "primary": "#0B0C0E",
+      "secondary": "#F4F3EF",
+      "accent": "#C99B54"
+    },
+    "notes": "Roles/prompts below are AgentsOffice reconstructions. Skydive did not expose per-agent system prompts on the public share API; authenticated session could inventory a separate personal office but not full PRIM8 member profiles."
+  },
+  "agents": [
+    {
+      "slug": "jarvis",
+      "display_name": "Jarvis",
+      "skydive_key": "htpkcE2QxtLvKLGr",
+      "avatar_slug": "blueskin-pinkhair-0129",
+      "role": "Office lead & coordinator for PRIM8 Productions",
+      "color": "#ec4899",
+      "room_id": "manager"
+    },
+    {
+      "slug": "aria",
+      "display_name": "ARIA",
+      "skydive_key": "6xrZYE9ftwk_Ech8",
+      "avatar_slug": "greenskin-greenhair-0252",
+      "role": "A&R / creative repertoire for PRIM8 Productions",
+      "color": "#4ade80",
+      "room_id": "workspace"
+    },
+    {
+      "slug": "simone",
+      "display_name": "SIMONE",
+      "skydive_key": "ntTz4BSeF99z5fO1",
+      "avatar_slug": "pinkskin-greenhair-1472",
+      "role": "Creative direction & artist development",
+      "color": "#f472b6",
+      "room_id": "workspace"
+    },
+    {
+      "slug": "spike",
+      "display_name": "SPIKE",
+      "skydive_key": "vb5E_z_Jtl3BXJKw",
+      "avatar_slug": "purpleskin-bluehair-0580",
+      "role": "Session producer & project momentum",
+      "color": "#a78bfa",
+      "room_id": "workspace"
+    },
+    {
+      "slug": "dre",
+      "display_name": "DRE",
+      "skydive_key": "DsXigmtVdNH3gz0P",
+      "avatar_slug": "blueskin-bluehair-0057",
+      "role": "Music / audio producer",
+      "color": "#60a5fa",
+      "room_id": "datacenter"
+    },
+    {
+      "slug": "shakir",
+      "display_name": "SHAKIR",
+      "skydive_key": "AkG94XdD2l45INO3",
+      "avatar_slug": "tealskin-brownhair-0753",
+      "role": "Performance & release operations",
+      "color": "#2dd4bf",
+      "room_id": "workspace"
+    },
+    {
+      "slug": "echo",
+      "display_name": "Echo",
+      "skydive_key": "TxqDpLuTSAj9daFX",
+      "avatar_slug": "blueskin-greenhair-0079",
+      "role": "Mix / sound & signal chain",
+      "color": "#22d3ee",
+      "room_id": "datacenter"
+    }
+  ]
+}
