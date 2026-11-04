@@ -11,11 +11,18 @@
       "accentAlt": "#C99B54"
     },
     "visual": {
-      "officeLayout": "open-plan Skydive/Gather style",
-      "agentSprites": "prim8_* streetwear recolors",
+      "officeLayout": "open-plan Skydive/Gather style (Three.js isometric)",
+      "agentModels": "frontend/public/assets/models/agents/*.glb claymation looks",
+      "lookMap": {
+        "creative": ["simone"],
+        "cinematographer": ["dre", "spike"],
+        "director": ["jarvis", "shakir"],
+        "strategist": ["aria", "dispatcher"],
+        "producer": ["echo", "data_engineer"]
+      },
       "portraits": "/assets/portraits/{slug}.jpg"
     },
-    "notes": "Roles/prompts below are AgentsOffice reconstructions. Skydive did not expose per-agent system prompts on the public share API; authenticated session could inventory a separate personal office but not full PRIM8 member profiles. Visual office + agent look redesigned from PRIM8 character references and Skydive office layout."
+    "notes": "Roles/prompts below are AgentsOffice reconstructions. Skydive did not expose per-agent system prompts on the public share API; authenticated session could inventory a separate personal office but not full PRIM8 member profiles. Visual office + volumetric claymation GLB looks mapped in frontend/src/three/avatars.ts (SLUG_LOOK)."
   },
   "agents": [
     {

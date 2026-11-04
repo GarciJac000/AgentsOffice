@@ -59,8 +59,15 @@ Runtime builtins: [`app/services/agents/definitions.py`](../app/services/agents/
 Names, keys, and avatars come from Skydive `GET /api/v2/public/offices?token=…`.  
 **Roles and system prompts were not exportable** from the public share API.
 
+## Scene integration notes
+
+- Agents spawn at role-assigned stations (`SLUG_SEAT` in `rooms.ts`) so looks land at the right zone
+- Working / running status seats avatars at chair positions (not desk tops) with desk-facing yaw
+- Name pills and chat bubbles use `LOOK_ACCENT` colors matching the claymation look
+- Preserve `SLUG_LOOK` when adding agents — map new slugs to one of the five GLBs
+
 ## Gaps vs Skydive
 
-- No true 3D isometric GLB interior (Phaser orthogonal tilemap approximating the open plan)
+- Office interior is procedural Three.js geometry (not a Skydive/Gather GLB floorplan)
 - No Skydive-native routines engine, hosted apps, or OAuth integrations
 - No verified original system prompts from the PRIM8 org

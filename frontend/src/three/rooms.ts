@@ -80,16 +80,45 @@ export const ROOMS: Record<string, RoomDef> = {
   },
 };
 
-export const DESK_SPOTS: { x: number; z: number; room: string }[] = [
-  { x: -1.6, z: 0.2, room: 'workspace' },
-  { x: 1.6, z: 0.2, room: 'workspace' },
-  { x: -1.6, z: 2.4, room: 'workspace' },
-  { x: 1.6, z: 2.4, room: 'workspace' },
-  { x: -2, z: -4.2, room: 'manager' },
-  { x: 2, z: -4.2, room: 'manager' },
-  { x: 4.5, z: 4.6, room: 'datacenter' },
-  { x: 6, z: 4.6, room: 'datacenter' },
+/** Chair / sit positions — keep avatars off desk tops (desks sit ~0.85 in front). */
+export interface Seat3D {
+  x: number;
+  z: number;
+  room: string;
+  /** World-space yaw so the claymation figure faces the desk / work surface. */
+  facing: number;
+}
+
+export const DESK_SPOTS: Seat3D[] = [
+  // Studio floor 2×2 — chairs south of desks, facing −Z into the desk
+  { x: -1.6, z: 0.65, room: 'workspace', facing: Math.PI },
+  { x: 1.6, z: 0.65, room: 'workspace', facing: Math.PI },
+  { x: -1.6, z: 2.85, room: 'workspace', facing: Math.PI },
+  { x: 1.6, z: 2.85, room: 'workspace', facing: Math.PI },
+  // Control — chairs south of back-wall desks
+  { x: -2.2, z: -4.3, room: 'manager', facing: Math.PI },
+  { x: 2.2, z: -4.3, room: 'manager', facing: Math.PI },
+  // Kitchen / Edit — dining chairs facing +Z toward the table
+  { x: 4.4, z: 4.5, room: 'datacenter', facing: 0.3 },
+  { x: 5.2, z: 4.5, room: 'datacenter', facing: 0 },
+  { x: 6.0, z: 4.5, room: 'datacenter', facing: -0.3 },
 ];
+
+/**
+ * Preferred seat index per slug so role looks land at the right station
+ * (workspace creatives at studio desks, leads at Control, audio at Edit).
+ */
+export const SLUG_SEAT: Record<string, number> = {
+  aria: 0,
+  simone: 1,
+  spike: 2,
+  shakir: 3,
+  jarvis: 4,
+  dispatcher: 5,
+  dre: 6,
+  echo: 7,
+  data_engineer: 8,
+};
 
 export const POIS: { id: string; x: number; z: number; action: string }[] = [
   { id: 'vending', x: 7, z: 3.2, action: 'drink' },

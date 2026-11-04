@@ -53,8 +53,10 @@ export class OfficeApp {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(this.viewWidth(), this.viewHeight());
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.15;
     this.renderer.domElement.style.display = 'block';
     this.renderer.domElement.style.width = '100%';
     this.renderer.domElement.style.height = '100%';
@@ -98,10 +100,10 @@ export class OfficeApp {
   }
 
   private setupLights() {
-    const hemi = new THREE.HemisphereLight(0xfff4e6, 0x8a9bb0, 0.85);
+    const hemi = new THREE.HemisphereLight(0xfff7ee, 0x9aabbc, 1.15);
     this.scene.add(hemi);
 
-    const sun = new THREE.DirectionalLight(0xfff0d6, 1.35);
+    const sun = new THREE.DirectionalLight(0xfff2dc, 1.55);
     sun.position.set(12, 18, 8);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
