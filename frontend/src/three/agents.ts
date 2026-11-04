@@ -13,6 +13,7 @@ export interface Agent3D {
   homeRoom: string;
   currentRoom: string;
   group: THREE.Group;
+  sprite: THREE.Sprite;
   label: CSS2DObject;
   bubble?: CSS2DObject;
   isMoving: boolean;
@@ -22,138 +23,18 @@ export interface Agent3D {
   path: THREE.Vector3[];
   speed: number;
   bobPhase: number;
+  baseScale: THREE.Vector3;
 }
 
-const HAIR: Record<string, number> = {
-  jarvis: 0xec4899,
-  aria: 0x22c55e,
-  simone: 0xf472b6,
-  spike: 0xa78bfa,
-  dre: 0x60a5fa,
-  shakir: 0x2dd4bf,
-  echo: 0x22d3ee,
-  data_engineer: 0x94a3b8,
-  dispatcher: 0xc99b54,
-};
-
-const SKIN_TONES: Record<string, number> = {
-  jarvis: 0x5c3a21,
-  aria: 0xc68642,
-  simone: 0x8d5524,
-  spike: 0xf1c27d,
-  dre: 0xc68642,
-  shakir: 0x8d5524,
-  echo: 0xffdbac,
-  data_engineer: 0xe0ac69,
-  dispatcher: 0xffdbac,
-};
+const AGENT_HEIGHT = 2.25;
 
 function cssToHex(css: string): number {
   return parseInt(css.replace('#', ''), 16);
 }
 
-function mat(color: number, opts: THREE.MeshStandardMaterialParameters = {}) {
-  return new THREE.MeshStandardMaterial({ color, roughness: 0.75, metalness: 0.05, ...opts });
-}
-
-/** Skydive-meets-PRIM8 stylized agent: black streetwear body + distinctive head/hair. */
-function buildAgentMesh(slug: string, accent: number): THREE.Group {
-  const g = new THREE.Group();
-  const skin = SKIN_TONES[slug] ?? 0xe0ac69;
-  const hair = HAIR[slug] ?? accent;
-
-  // Legs
-  const legGeo = new THREE.CapsuleGeometry(0.09, 0.28, 4, 8);
-  const pant = mat(0x1a1a1e);
-  const leftLeg = new THREE.Mesh(legGeo, pant);
-  leftLeg.position.set(-0.1, 0.28, 0);
-  leftLeg.castShadow = true;
-  const rightLeg = new THREE.Mesh(legGeo, pant);
-  rightLeg.position.set(0.1, 0.28, 0);
-  rightLeg.castShadow = true;
-  g.add(leftLeg, rightLeg);
-
-  // Shoes
-  for (const sx of [-0.1, 0.1]) {
-    const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 0.22), mat(0x0a0a0c));
-    shoe.position.set(sx, 0.05, 0.02);
-    shoe.castShadow = true;
-    g.add(shoe);
-  }
-
-  // Torso hoodie
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.35, 6, 10), mat(0x141418));
-  torso.position.y = 0.78;
-  torso.castShadow = true;
-  g.add(torso);
-
-  // PRIM8 chest badge
-  const badge = new THREE.Mesh(
-    new THREE.BoxGeometry(0.18, 0.06, 0.02),
-    mat(0xffffff, { emissive: 0xec4899, emissiveIntensity: 0.25 }),
-  );
-  badge.position.set(0, 0.88, 0.22);
-  g.add(badge);
-
-  // Arms
-  const armGeo = new THREE.CapsuleGeometry(0.07, 0.28, 4, 8);
-  const leftArm = new THREE.Mesh(armGeo, mat(0x141418));
-  leftArm.position.set(-0.3, 0.78, 0);
-  leftArm.rotation.z = 0.2;
-  leftArm.castShadow = true;
-  const rightArm = new THREE.Mesh(armGeo, mat(0x141418));
-  rightArm.position.set(0.3, 0.78, 0);
-  rightArm.rotation.z = -0.2;
-  rightArm.castShadow = true;
-  g.add(leftArm, rightArm);
-
-  // Head
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12), mat(skin));
-  head.position.y = 1.28;
-  head.castShadow = true;
-  g.add(head);
-
-  // Hair / beanie / cap variants by slug
-  if (slug === 'echo' || slug === 'dre') {
-    const cap = new THREE.Mesh(
-      new THREE.SphereGeometry(0.23, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.55),
-      mat(0x111113),
-    );
-    cap.position.y = 1.36;
-    g.add(cap);
-  } else if (slug === 'shakir') {
-    const beanie = new THREE.Mesh(
-      new THREE.SphereGeometry(0.24, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.6),
-      mat(0x1f1f23),
-    );
-    beanie.position.y = 1.38;
-    g.add(beanie);
-  } else if (slug === 'aria' || slug === 'simone') {
-    const bun = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 10), mat(hair));
-    bun.position.set(0, 1.52, -0.02);
-    bun.castShadow = true;
-    g.add(bun);
-    const hairCap = new THREE.Mesh(
-      new THREE.SphereGeometry(0.23, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.5),
-      mat(0x1a1a1a),
-    );
-    hairCap.position.y = 1.36;
-    g.add(hairCap);
-  } else {
-    const hairMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.24, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.55),
-      mat(hair),
-    );
-    hairMesh.position.y = 1.38;
-    hairMesh.castShadow = true;
-    g.add(hairMesh);
-  }
-
-  g.userData.leftArm = leftArm;
-  g.userData.rightArm = rightArm;
-  g.userData.leftLeg = leftLeg;
-  g.userData.rightLeg = rightLeg;
-  return g;
+function assetUrl(path: string): string {
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}${path.replace(/^\//, '')}`;
 }
 
 function makeNamePill(name: string): CSS2DObject {
@@ -165,14 +46,14 @@ function makeNamePill(name: string): CSS2DObject {
     font: 700 11px system-ui, sans-serif;
     padding: 3px 10px;
     border-radius: 999px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.22);
     white-space: nowrap;
     border-bottom: 2px solid #ec4899;
     pointer-events: none;
     user-select: none;
   `;
   const obj = new CSS2DObject(el);
-  obj.position.set(0, 1.75, 0);
+  obj.position.set(0, AGENT_HEIGHT + 0.18, 0);
   return obj;
 }
 
@@ -191,7 +72,7 @@ function makeBubble(text: string): CSS2DObject {
     pointer-events: none;
   `;
   const obj = new CSS2DObject(el);
-  obj.position.set(0, 2.15, 0);
+  obj.position.set(0, AGENT_HEIGHT + 0.55, 0);
   return obj;
 }
 
@@ -209,6 +90,66 @@ function makeRoomLabel(text: string, pos: Spot3D): CSS2DObject {
   const obj = new CSS2DObject(el);
   obj.position.set(pos.x, 0.05, pos.z);
   return obj;
+}
+
+/** Build a camera-facing PRIM8 character billboard from cutout PNG. */
+function buildAgentBillboard(texture: THREE.Texture, accent: number): {
+  group: THREE.Group;
+  sprite: THREE.Sprite;
+  baseScale: THREE.Vector3;
+} {
+  const group = new THREE.Group();
+
+  const img = texture.image as { width: number; height: number };
+  const aspect = (img?.width || 682) / (img?.height || 1024);
+
+  const mat = new THREE.SpriteMaterial({
+    map: texture,
+    transparent: true,
+    depthWrite: false,
+    alphaTest: 0.08,
+    sizeAttenuation: true,
+  });
+  const sprite = new THREE.Sprite(mat);
+  const height = AGENT_HEIGHT;
+  const width = height * aspect;
+  sprite.scale.set(width, height, 1);
+  // Sprite center is midpoint — lift so feet sit on floor
+  sprite.position.y = height / 2;
+  sprite.center.set(0.5, 0.5);
+  sprite.renderOrder = 10;
+  group.add(sprite);
+
+  // Soft contact shadow
+  const shadow = new THREE.Mesh(
+    new THREE.CircleGeometry(0.38, 24),
+    new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+    }),
+  );
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = 0.02;
+  group.add(shadow);
+
+  // Tiny accent ring so agents pop on wood floor
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.4, 0.46, 24),
+    new THREE.MeshBasicMaterial({
+      color: accent,
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }),
+  );
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.025;
+  group.add(ring);
+
+  return { group, sprite, baseScale: sprite.scale.clone() };
 }
 
 const SPAWNS: Spot3D[] = [
@@ -232,34 +173,62 @@ export class AgentManager {
   private pointer = new THREE.Vector2();
   private bubbleTimers = new Map<string, number>();
   private wanderAcc = 0;
+  private textures = new Map<string, THREE.Texture>();
 
   constructor(scene: THREE.Scene, labelRoot: THREE.Object3D) {
     this.scene = scene;
     this.labelRoot = labelRoot;
   }
 
-  create() {
-    // Room labels
+  async create() {
     for (const room of Object.values(ROOMS)) {
       this.labelRoot.add(makeRoomLabel(t(room.labelKey), room.labelPos));
     }
 
     const entries = getAgentsCached();
+    const loader = new THREE.TextureLoader();
+
+    await Promise.all(
+      entries.map(
+        (a) =>
+          new Promise<void>((resolve) => {
+            const url = assetUrl(`assets/agents/${a.slug}.png`);
+            loader.load(
+              url,
+              (tex) => {
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.anisotropy = 8;
+                this.textures.set(a.slug, tex);
+                resolve();
+              },
+              undefined,
+              () => {
+                console.warn('[PRIM8] missing agent sprite', url);
+                resolve();
+              },
+            );
+          }),
+      ),
+    );
+
     entries.forEach((a, idx) => {
       const spawn = SPAWNS[idx % SPAWNS.length];
       const color = cssToHex(a.color);
-      const mesh = buildAgentMesh(a.slug, color);
-      mesh.position.set(spawn.x, 0, spawn.z);
-      mesh.name = a.phaserAgentId || `agt_${a.slug}`;
-      this.scene.add(mesh);
+      const tex = this.textures.get(a.slug);
+      if (!tex) return;
+
+      const { group, sprite, baseScale } = buildAgentBillboard(tex, color);
+      group.position.set(spawn.x, 0, spawn.z);
+      group.name = a.phaserAgentId || `agt_${a.slug}`;
+      this.scene.add(group);
 
       const label = makeNamePill(a.displayName);
-      mesh.add(label);
+      group.add(label);
 
-      // Click proxy
-      mesh.traverse((o) => {
+      group.traverse((o) => {
         o.userData.agentId = a.phaserAgentId || `agt_${a.slug}`;
         o.userData.agentName = a.displayName;
+        o.userData.isAgent = true;
       });
 
       this.agents.push({
@@ -269,7 +238,8 @@ export class AgentManager {
         color,
         homeRoom: a.roomId || 'workspace',
         currentRoom: a.roomId || 'workspace',
-        group: mesh,
+        group,
+        sprite,
         label,
         isMoving: false,
         atShame: false,
@@ -278,6 +248,7 @@ export class AgentManager {
         path: [],
         speed: 1.8,
         bobPhase: Math.random() * Math.PI * 2,
+        baseScale,
       });
     });
 
@@ -290,6 +261,7 @@ export class AgentManager {
     EventBus.off('chat:agent-move', this.onMove);
     EventBus.off('chat:agent-bubble', this.onBubble);
     EventBus.off('agent:status', this.onStatus);
+    for (const tex of this.textures.values()) tex.dispose();
   }
 
   private onMove = (data: { agentId: string; roomId: string }) => {
@@ -321,8 +293,8 @@ export class AgentManager {
     this.pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
     this.pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
     this.raycaster.setFromCamera(this.pointer, camera);
-    const meshes = this.agents.map((a) => a.group);
-    const hits = this.raycaster.intersectObjects(meshes, true);
+    const sprites = this.agents.map((a) => a.sprite);
+    const hits = this.raycaster.intersectObjects(sprites, false);
     if (!hits.length) return null;
     const id = hits[0].object.userData.agentId as string | undefined;
     return this.agents.find((a) => a.id === id) || null;
@@ -399,24 +371,28 @@ export class AgentManager {
     }
 
     for (const agent of this.agents) {
-      agent.bobPhase += dt * (agent.isMoving ? 10 : 2);
-      const breathe = Math.sin(agent.bobPhase) * 0.015;
-      agent.group.position.y = breathe;
+      agent.bobPhase += dt * (agent.isMoving ? 11 : 2.2);
 
-      // Walk cycle
-      const armSwing = agent.isMoving ? Math.sin(agent.bobPhase) * 0.45 : 0;
-      const leftArm = agent.group.userData.leftArm as THREE.Mesh | undefined;
-      const rightArm = agent.group.userData.rightArm as THREE.Mesh | undefined;
-      if (leftArm) leftArm.rotation.x = armSwing;
-      if (rightArm) rightArm.rotation.x = -armSwing;
+      // Idle breathing / walk bounce on the billboard
+      const bounce = agent.isMoving
+        ? Math.abs(Math.sin(agent.bobPhase)) * 0.06
+        : Math.sin(agent.bobPhase) * 0.012;
+      agent.group.position.y = bounce;
 
-      if (!agent.target) {
-        if (agent.working) {
-          // Typing bob on arms
-          if (rightArm) rightArm.rotation.x = -0.6 + Math.sin(agent.bobPhase * 2) * 0.15;
-        }
-        continue;
+      const squash = agent.isMoving ? 1 + Math.sin(agent.bobPhase * 2) * 0.03 : 1;
+      agent.sprite.scale.set(
+        agent.baseScale.x * (agent.isMoving ? 1 / squash : 1),
+        agent.baseScale.y * squash,
+        1,
+      );
+
+      // Working: subtle "typing" scale pulse
+      if (agent.working && !agent.isMoving) {
+        const pulse = 1 + Math.sin(agent.bobPhase * 3) * 0.015;
+        agent.sprite.scale.set(agent.baseScale.x * pulse, agent.baseScale.y * pulse, 1);
       }
+
+      if (!agent.target) continue;
 
       const pos = agent.group.position;
       const target = agent.target;
@@ -434,7 +410,6 @@ export class AgentManager {
       const step = Math.min(dist, agent.speed * dt);
       pos.x += (dx / dist) * step;
       pos.z += (dz / dist) * step;
-      agent.group.rotation.y = Math.atan2(dx, dz);
     }
   }
 

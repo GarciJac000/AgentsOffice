@@ -80,7 +80,7 @@ export class OfficeApp {
   async start() {
     await loadAgentRegistry();
     this.agents = new AgentManager(this.scene, this.scene);
-    this.agents.create();
+    await this.agents.create();
     this.running = true;
     this.clock.start();
     this.loop();
