@@ -38,7 +38,7 @@ export class OfficeApp {
     this.scene.fog = new THREE.Fog(0x12131a, 45, 80);
 
     const aspect = this.viewportAspect();
-    const frustum = 11;
+    const frustum = 9.5;
     this.camera = new THREE.OrthographicCamera(
       -frustum * aspect,
       frustum * aspect,
