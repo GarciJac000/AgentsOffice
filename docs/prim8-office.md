@@ -26,17 +26,17 @@ The office is a **full 3D isometric Three.js scene** (orthographic camera, soft 
 | Studio Floor | `workspace` | Center 2×2 desk cluster on a rug |
 | Kitchen / Edit | `datacenter` | Fridge, dining table, vending |
 
-Agents are **real 3D avatars** (`frontend/src/three/avatars.ts`) with look-specific streetwear meshes:
+Agents use **authored claymation GLB models** (`frontend/public/assets/models/agents/`), loaded via `GLTFLoader` in `frontend/src/three/avatars.ts`:
 
-| Look | Signature | Agents |
-|------|-----------|--------|
-| cameraman | Cap, backpack, cinema camera | DRE, SPIKE |
-| beanie | Beanie, sunglasses, crossed arms | Jarvis, SHAKIR |
-| executive | Bun, glasses, gold hoops, laptop | ARIA, Dispatcher |
-| street | Curly ponytail, gold hoops, pink kicks | SIMONE |
-| producer | Backward cap, headphones | Echo, Data Engineer |
+| GLB | Look | Agents |
+|-----|------|--------|
+| `01_pink_creative.glb` | creative | SIMONE |
+| `02_blue_cinematographer.glb` | cinematographer | DRE, SPIKE |
+| `03_purple_director.glb` | director | Jarvis, SHAKIR |
+| `04_green_strategist.glb` | strategist | ARIA, Dispatcher |
+| `05_orange_producer.glb` | producer | Echo, Data Engineer |
 
-Walk/idle limb animation + facing toward movement. Portrait cards still power the React UI (`assets/portraits/{slug}.jpg`).
+Models are Z-up; the loader rotates to Y-up, plants feet on the floor, and scales to ~2.35 world units. Walk/idle uses root bob + sway (no skeletal clips in the GLBs). Portrait cards still power the React UI (`assets/portraits/{slug}.jpg`).
 
 Source: `frontend/src/three/` (`OfficeApp.ts`, `buildOffice.ts`, `agents.ts`, `avatars.ts`, `rooms.ts`).
 

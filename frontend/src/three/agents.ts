@@ -119,58 +119,60 @@ export class AgentManager {
     }
 
     const entries = getAgentsCached();
-    entries.forEach((a, idx) => {
-      const spawn = SPAWNS[idx % SPAWNS.length];
-      const color = cssToHex(a.color);
-      const parts = createAvatar(a.slug);
-      const group = parts.root;
-      group.position.set(spawn.x, 0, spawn.z);
-      // Face toward room center / desks so 3D silhouette varies
-      const faceX = -spawn.x * 0.15;
-      const faceZ = -spawn.z * 0.15 - 1;
-      group.rotation.y = Math.atan2(faceX - 0, faceZ - 0) + (idx % 3 - 1) * 0.4;
-      group.name = a.phaserAgentId || `agt_${a.slug}`;
-      this.scene.add(group);
+    await Promise.all(
+      entries.map(async (a, idx) => {
+        const spawn = SPAWNS[idx % SPAWNS.length];
+        const color = cssToHex(a.color);
+        const parts = await createAvatar(a.slug);
+        const group = parts.root;
+        group.position.set(spawn.x, 0, spawn.z);
+        // Face toward room center / desks so claymation silhouettes read in iso
+        const faceX = -spawn.x * 0.15;
+        const faceZ = -spawn.z * 0.15 - 1;
+        group.rotation.y = Math.atan2(faceX, faceZ) + (idx % 3 - 1) * 0.4;
+        group.name = a.phaserAgentId || `agt_${a.slug}`;
+        this.scene.add(group);
 
-      const label = makeNamePill(a.displayName, parts.height);
-      group.add(label);
+        const label = makeNamePill(a.displayName, parts.height);
+        group.add(label);
 
-      group.traverse((o) => {
-        o.userData.agentId = a.phaserAgentId || `agt_${a.slug}`;
-        o.userData.agentName = a.displayName;
-        o.userData.isAgent = true;
-      });
+        group.traverse((o) => {
+          o.userData.agentId = a.phaserAgentId || `agt_${a.slug}`;
+          o.userData.agentName = a.displayName;
+          o.userData.isAgent = true;
+        });
 
-      const agent: Agent3D = {
-        id: a.phaserAgentId || `agt_${a.slug}`,
-        slug: a.slug,
-        name: a.displayName,
-        color,
-        homeRoom: a.roomId || 'workspace',
-        currentRoom: a.roomId || 'workspace',
-        group,
-        parts,
-        label,
-        isMoving: false,
-        atShame: false,
-        working: false,
-        target: null,
-        path: [],
-        speed: 1.8,
-        bobPhase: Math.random() * Math.PI * 2,
-        facing: group.rotation.y,
-      };
-      this.agents.push(agent);
+        const agent: Agent3D = {
+          id: a.phaserAgentId || `agt_${a.slug}`,
+          slug: a.slug,
+          name: a.displayName,
+          color,
+          homeRoom: a.roomId || 'workspace',
+          currentRoom: a.roomId || 'workspace',
+          group,
+          parts,
+          label,
+          isMoving: false,
+          atShame: false,
+          working: false,
+          target: null,
+          path: [],
+          speed: 1.8,
+          bobPhase: Math.random() * Math.PI * 2,
+          facing: group.rotation.y,
+        };
+        this.agents.push(agent);
 
-      // Kick off a short intro walk so 3D limbs are obvious on load
-      if (idx % 2 === 0) {
-        const room = ROOMS[agent.homeRoom];
-        if (room) {
-          const spot = room.spots[(idx + 1) % room.spots.length];
-          this.setPath(agent, [new THREE.Vector3(spot.x, 0, spot.z)]);
+        // Intro walk so motion + facing are obvious on load
+        if (idx % 2 === 0) {
+          const room = ROOMS[agent.homeRoom];
+          if (room) {
+            const spot = room.spots[(idx + 1) % room.spots.length];
+            this.setPath(agent, [new THREE.Vector3(spot.x, 0, spot.z)]);
+          }
         }
-      }
-    });
+      }),
+    );
 
     EventBus.on('chat:agent-move', this.onMove);
     EventBus.on('chat:agent-bubble', this.onBubble);
