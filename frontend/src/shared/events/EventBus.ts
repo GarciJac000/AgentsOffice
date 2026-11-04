@@ -1,33 +1,48 @@
-import Phaser from 'phaser';
-
 type EventCallback = (...args: any[]) => void;
 
 class GameEventBus {
-  private emitter = new Phaser.Events.EventEmitter();
-  private gameInstance: Phaser.Game | null = null;
+  private listeners = new Map<string, Set<{ cb: EventCallback; ctx?: any }>>();
+  private gameInstance: { destroy?: () => void } | null = null;
 
-  setGameInstance(game: Phaser.Game) {
+  setGameInstance(game: { destroy?: () => void } | null) {
     this.gameInstance = game;
   }
 
-  getGameInstance(): Phaser.Game | null {
+  getGameInstance() {
     return this.gameInstance;
   }
 
   emit(event: string, ...args: any[]) {
-    this.emitter.emit(event, ...args);
+    const set = this.listeners.get(event);
+    if (!set) return;
+    for (const { cb, ctx } of [...set]) {
+      cb.apply(ctx, args);
+    }
   }
 
   on(event: string, callback: EventCallback, context?: any) {
-    this.emitter.on(event, callback, context);
+    if (!this.listeners.has(event)) this.listeners.set(event, new Set());
+    this.listeners.get(event)!.add({ cb: callback, ctx: context });
   }
 
   once(event: string, callback: EventCallback, context?: any) {
-    this.emitter.once(event, callback, context);
+    const wrap: EventCallback = (...args) => {
+      this.off(event, wrap);
+      callback.apply(context, args);
+    };
+    this.on(event, wrap);
   }
 
-  off(event: string, callback?: EventCallback, context?: any) {
-    this.emitter.off(event, callback, context);
+  off(event: string, callback?: EventCallback, _context?: any) {
+    const set = this.listeners.get(event);
+    if (!set) return;
+    if (!callback) {
+      set.clear();
+      return;
+    }
+    for (const entry of [...set]) {
+      if (entry.cb === callback) set.delete(entry);
+    }
   }
 }
 

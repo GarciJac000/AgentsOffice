@@ -16,24 +16,19 @@ Default AgentsOffice roster + visual theme for Jacob’s PRIM8 Productions studi
 
 ## Visual design
 
-Office layout mirrors the Skydive / Gather-style open floor plan:
+The office is a **full 3D isometric Three.js scene** (orthographic camera, soft shadows) inspired by the Skydive / Gather open floor plan:
 
 | Zone | Room id | Notes |
 |------|---------|-------|
 | Creative Wall | `showroom` | Left wall shelves, posters, plants |
 | Control | `manager` | Back-wall desks under PRIM8 monitor |
-| Lounge | `meeting` | Sofa + coffee table (top-right) |
+| Lounge | `meeting` | Sofa + coffee table |
 | Studio Floor | `workspace` | Center 2×2 desk cluster on a rug |
 | Kitchen / Edit | `datacenter` | Fridge, dining table, vending |
 
-Agents use PRIM8 streetwear-recolored pixel sheets (`prim8_*.png`) plus high-res portrait cards in the React UI (`/assets/portraits/*.jpg`) derived from the brand character references.
+Agents are stylized 3D streetwear figures with CSS2D name pills. High-res portrait cards still power the React UI (`assets/portraits/*.jpg`).
 
-Rebuild helpers:
-
-```bash
-python3 scripts/build_prim8_office_map.py
-python3 scripts/build_prim8_agent_sprites.py
-```
+Source: `frontend/src/three/` (`OfficeApp.ts`, `buildOffice.ts`, `agents.ts`, `rooms.ts`).
 
 ## Agents
 

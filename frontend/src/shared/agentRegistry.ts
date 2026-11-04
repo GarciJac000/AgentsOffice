@@ -31,7 +31,8 @@ let nextSpriteIndex = 10; // 用户自定义 agent 从 char_10 开始
 
 /** Portrait path for React UI (PRIM8 character cards). */
 export function getPortraitUrl(slug: string): string {
-  return `/assets/portraits/${slug}.jpg`;
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}assets/portraits/${slug}.jpg`;
 }
 
 /** 最大可用精灵数（素材包提供 20 个预制角色） */

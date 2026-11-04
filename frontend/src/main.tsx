@@ -1,22 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Phaser from 'phaser';
-import { gameConfig } from './phaser/config';
 import { ReactOverlay } from './react/ReactOverlay';
-import { EventBus } from './shared/events/EventBus';
+import { startOfficeApp } from './three/OfficeApp';
 
-// 1. 启动 Phaser Game
-const game = new Phaser.Game(gameConfig);
+const gameContainer = document.getElementById('game-container');
+if (gameContainer) {
+  gameContainer.style.position = 'absolute';
+  gameContainer.style.inset = '0';
+  gameContainer.style.overflow = 'hidden';
+  startOfficeApp(gameContainer).catch((err) => {
+    console.error('[PRIM8] Failed to start 3D office', err);
+  });
+}
 
-// 2. 注入 game 实例到 EventBus
-EventBus.setGameInstance(game);
-
-// 3. 挂载 React Overlay
 const uiRoot = document.getElementById('ui-overlay');
 if (uiRoot) {
   ReactDOM.createRoot(uiRoot).render(
     <React.StrictMode>
       <ReactOverlay />
-    </React.StrictMode>
+    </React.StrictMode>,
   );
 }
