@@ -29,6 +29,23 @@ const LOOK_MODEL: Record<AvatarLook, string> = {
   producer: '05_orange_producer.glb',
 };
 
+/** Accent CSS colors for name pills / UI chrome per claymation look. */
+export const LOOK_ACCENT: Record<AvatarLook, string> = {
+  creative: '#ec4899',
+  cinematographer: '#60a5fa',
+  director: '#a78bfa',
+  strategist: '#4ade80',
+  producer: '#f97316',
+};
+
+export function lookForSlug(slug: string): AvatarLook {
+  return SLUG_LOOK[slug] ?? 'producer';
+}
+
+export function modelFileForLook(look: AvatarLook): string {
+  return LOOK_MODEL[look];
+}
+
 /** Target on-floor height so claymation figures read next to ~0.72 desks. */
 const TARGET_HEIGHT = 2.35;
 
@@ -82,10 +99,14 @@ function prepareTemplate(scene: THREE.Object3D): THREE.Group {
       if (!mat) continue;
       mat.side = THREE.FrontSide;
       const std = mat as THREE.MeshStandardMaterial;
-      std.vertexColors = true;
-      std.metalness = 0.08;
-      std.roughness = 0.88;
+      // Only enable vertex colors when present — otherwise albedo multiplies to black.
+      const hasVertexColor = !!mesh.geometry?.attributes?.color;
+      std.vertexColors = hasVertexColor;
+      std.metalness = 0;
+      std.roughness = 0.92;
       std.flatShading = true;
+      std.envMapIntensity = 0;
+      if (std.metalnessMap) std.metalnessMap = null;
       if (std.map) std.map.colorSpace = THREE.SRGBColorSpace;
       std.needsUpdate = true;
     }
@@ -156,10 +177,10 @@ function fallbackBlock(look: AvatarLook): AvatarParts {
   return { root, body, height: TARGET_HEIGHT, look };
 }
 
-/** Load claymation GLB for slug (cached + cloned). */
+/** Load claymation GLB for slug (cached + cloned). Preserves SLUG_LOOK mapping. */
 export async function createAvatar(slug: string): Promise<AvatarParts> {
-  const look = SLUG_LOOK[slug] ?? 'producer';
-  const file = LOOK_MODEL[look];
+  const look = lookForSlug(slug);
+  const file = modelFileForLook(look);
   try {
     const template = await loadTemplate(file);
     const root = new THREE.Group();
@@ -186,9 +207,10 @@ export function animateAvatar(
     parts.body.rotation.z = Math.sin(phase) * 0.04;
     parts.body.rotation.x = Math.sin(phase * 2) * 0.02;
   } else if (working) {
-    parts.body.position.y = Math.sin(phase * 1.4) * 0.012;
-    parts.body.rotation.z = Math.sin(phase * 0.9) * 0.015;
-    parts.body.rotation.x = -0.04 + Math.sin(phase * 2.2) * 0.02;
+    // Lean into the desk / console while "working"
+    parts.body.position.y = -0.08 + Math.sin(phase * 1.4) * 0.01;
+    parts.body.rotation.z = Math.sin(phase * 0.9) * 0.012;
+    parts.body.rotation.x = -0.12 + Math.sin(phase * 2.2) * 0.015;
   } else {
     parts.body.position.y = Math.sin(phase * 0.75) * 0.014;
     parts.body.rotation.z = Math.sin(phase * 0.55) * 0.012;
