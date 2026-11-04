@@ -20,16 +20,16 @@ export class PreloadScene extends Phaser.Scene {
 
     this.progressBar = this.add.graphics();
 
-    this.loadingText = this.add.text(centerX, centerY - 40, 'Loading AgentsOffice...', {
+    this.loadingText = this.add.text(centerX, centerY - 40, 'Loading PRIM8 Studio...', {
       fontFamily: 'monospace',
       fontSize: '14px',
-      color: '#e0e0e0',
+      color: '#f9a8d4',
     });
     this.loadingText.setOrigin(0.5);
 
     this.load.on('progress', (value: number) => {
       this.progressBar.clear();
-      this.progressBar.fillStyle(0x4ade80, 1);
+      this.progressBar.fillStyle(0xec4899, 1);
       this.progressBar.fillRect(centerX - 155, centerY - 10, 310 * value, 20);
     });
 
@@ -76,10 +76,22 @@ export class PreloadScene extends Phaser.Scene {
       frameHeight: 32,
     });
 
-    // 20 个角色 spritesheet（32x64 帧 — 每个角色 2 格高）
+    // 20 stock LimeZu sheets (fallback / custom agents)
     for (let i = 1; i <= 20; i++) {
       const key = `char_${String(i).padStart(2, '0')}`;
       this.load.spritesheet(key, `assets/sprites/characters/${key}.png`, {
+        frameWidth: 32,
+        frameHeight: 64,
+      });
+    }
+
+    // PRIM8 streetwear recolors for the studio roster
+    const prim8Slugs = [
+      'jarvis', 'aria', 'simone', 'spike', 'dre', 'shakir', 'echo',
+      'data_engineer', 'dispatcher',
+    ];
+    for (const slug of prim8Slugs) {
+      this.load.spritesheet(`prim8_${slug}`, `assets/sprites/characters/prim8_${slug}.png`, {
         frameWidth: 32,
         frameHeight: 64,
       });

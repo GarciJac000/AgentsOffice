@@ -27,74 +27,74 @@ const ROOMS: Record<
     spots: { x: number; y: number }[];
   }
 > = {
-  // 商品展厅（左上）— 导购员常驻，向客户推荐商品
+  // Creative wall / gallery (left) — plants, shelves, posters
   showroom: {
     label: '__room.showroom__',
-    labelPos: { x: 330, y: 120 },
-    entry: { x: 400, y: 365 },
+    labelPos: { x: 280, y: 200 },
+    entry: { x: 360, y: 360 },
     spots: [
-      { x: 260, y: 230 },
-      { x: 360, y: 230 },
-      { x: 460, y: 230 },
-      { x: 260, y: 310 },
-      { x: 360, y: 310 },
-      { x: 460, y: 310 },
+      { x: 280, y: 260 },
+      { x: 320, y: 320 },
+      { x: 280, y: 400 },
+      { x: 340, y: 460 },
+      { x: 300, y: 520 },
+      { x: 340, y: 580 },
     ],
   },
-  // 调度中心（右上）— 调度员常驻，分配任务
+  // Control wall (back desks under PRIM8 monitor)
   manager: {
     label: '__room.manager__',
-    labelPos: { x: 840, y: 100 },
-    entry: { x: 688, y: 270 },
+    labelPos: { x: 560, y: 140 },
+    entry: { x: 560, y: 280 },
     spots: [
-      { x: 700, y: 180 },
-      { x: 790, y: 180 },
-      { x: 700, y: 250 },
-      { x: 790, y: 250 },
-      { x: 740, y: 215 },
-      { x: 830, y: 215 },
+      { x: 480, y: 220 },
+      { x: 560, y: 220 },
+      { x: 640, y: 220 },
+      { x: 500, y: 260 },
+      { x: 620, y: 260 },
+      { x: 560, y: 300 },
     ],
   },
-  // 协作室（左下）— 多 Agent 协同讨论
+  // Lounge (top-right sofa)
   meeting: {
     label: '__room.meeting__',
-    labelPos: { x: 330, y: 540 },
-    entry: { x: 400, y: 525 },
+    labelPos: { x: 920, y: 180 },
+    entry: { x: 860, y: 280 },
     spots: [
-      { x: 265, y: 620 },
-      { x: 365, y: 620 },
-      { x: 465, y: 620 },
-      { x: 265, y: 720 },
-      { x: 365, y: 720 },
-      { x: 465, y: 720 },
+      { x: 880, y: 240 },
+      { x: 940, y: 240 },
+      { x: 900, y: 300 },
+      { x: 960, y: 300 },
+      { x: 920, y: 340 },
+      { x: 860, y: 320 },
     ],
   },
-  // 待命区（右侧中部）— 待命 Agent 就绪等待
+  // Studio floor — center 2x2 desk cluster
   workspace: {
     label: '__room.workspace__',
-    labelPos: { x: 840, y: 340 },
-    entry: { x: 850, y: 380 },
+    labelPos: { x: 600, y: 360 },
+    entry: { x: 600, y: 400 },
     spots: [
-      { x: 760, y: 380 },
-      { x: 850, y: 380 },
-      { x: 940, y: 380 },
-      { x: 760, y: 450 },
-      { x: 850, y: 450 },
-      { x: 940, y: 450 },
+      { x: 500, y: 440 },
+      { x: 620, y: 440 },
+      { x: 500, y: 540 },
+      { x: 620, y: 540 },
+      { x: 560, y: 480 },
+      { x: 680, y: 500 },
     ],
   },
-  // 数据仓库（右侧下部）— 理货员常驻，管理商品数据
+  // Kitchen / break + edit overflow (bottom-right)
   datacenter: {
     label: '__room.datacenter__',
-    labelPos: { x: 840, y: 600 },
-    entry: { x: 848, y: 610 },
+    labelPos: { x: 900, y: 620 },
+    entry: { x: 820, y: 620 },
     spots: [
-      { x: 760, y: 640 },
-      { x: 850, y: 640 },
-      { x: 940, y: 640 },
-      { x: 760, y: 720 },
-      { x: 850, y: 720 },
+      { x: 820, y: 660 },
+      { x: 900, y: 660 },
+      { x: 860, y: 720 },
       { x: 940, y: 720 },
+      { x: 800, y: 740 },
+      { x: 920, y: 760 },
     ],
   },
 };
@@ -112,91 +112,82 @@ interface POI {
 }
 
 const POIS: POI[] = [
-  // 自动贩卖机（展示厅内）— 去买饮料
-  { id: 'vending_showroom', x: 395, y: 230, nearestCorridor: 'SHOW_DOOR', action: 'drink', facingDir: 'up' },
-  // 自动贩卖机（数据中心旁）— 去买饮料
-  { id: 'vending_data', x: 1100, y: 700, nearestCorridor: 'DATA_AREA', action: 'drink', facingDir: 'up' },
-  // 会议室中央大桌 — 去坐坐
-  { id: 'meeting_table', x: 330, y: 650, nearestCorridor: 'MEET_DOOR', action: 'sit', facingDir: 'down' },
-  // 展示厅展板前 — 看看东西
-  { id: 'showroom_display', x: 250, y: 320, nearestCorridor: 'SHOW_DOOR', action: 'look', facingDir: 'left' },
-  // 走廊中央 — 路过闲逛
-  { id: 'corridor_center', x: 620, y: 430, nearestCorridor: 'COR_CENTER', action: 'look', facingDir: 'down' },
+  // Kitchen vending
+  { id: 'vending_kitchen', x: 1020, y: 640, nearestCorridor: 'DATA_AREA', action: 'drink', facingDir: 'up' },
+  // Lounge sofa
+  { id: 'lounge_sofa', x: 920, y: 280, nearestCorridor: 'MEET_DOOR', action: 'sit', facingDir: 'down' },
+  // Dining table
+  { id: 'kitchen_table', x: 880, y: 720, nearestCorridor: 'DATA_AREA', action: 'sit', facingDir: 'down' },
+  // Creative wall posters
+  { id: 'creative_wall', x: 280, y: 280, nearestCorridor: 'SHOW_DOOR', action: 'look', facingDir: 'left' },
+  // Studio center rug
+  { id: 'studio_center', x: 600, y: 500, nearestCorridor: 'COR_CENTER', action: 'look', facingDir: 'down' },
 ];
 
 // ============================================================
 // 状态目的地 — Agent 根据状态去不同位置
 // ============================================================
 
-/** 电脑工位 — working 状态目标（Agent 面朝上坐到电脑前） */
+/** Desk seats — working-state targets (face up at computers) */
 const DESK_SPOTS: { x: number; y: number; room: string }[] = [
-  // workspace 工位区电脑（3台电脑，坐在椅子位置面朝上）
-  { x: 992, y: 570, room: 'workspace' },
-  { x: 1088, y: 570, room: 'workspace' },
-  { x: 1184, y: 570, room: 'workspace' },
-  { x: 1088, y: 480, room: 'workspace' },
-  { x: 1184, y: 480, room: 'workspace' },
-  // datacenter 数据中心电脑
-  { x: 992, y: 830, room: 'datacenter' },
-  { x: 1088, y: 830, room: 'datacenter' },
-  { x: 1184, y: 830, room: 'datacenter' },
-  // manager 调度中心
-  { x: 960, y: 190, room: 'manager' },
+  // Studio floor 2x2 cluster
+  { x: 500, y: 480, room: 'workspace' },
+  { x: 620, y: 480, room: 'workspace' },
+  { x: 500, y: 580, room: 'workspace' },
+  { x: 620, y: 580, room: 'workspace' },
+  // Control wall (back desks)
+  { x: 480, y: 300, room: 'manager' },
+  { x: 640, y: 300, room: 'manager' },
+  // Kitchen / edit overflow
+  { x: 840, y: 700, room: 'datacenter' },
+  { x: 920, y: 700, room: 'datacenter' },
 ];
 
-/** 面壁角落 — error 状态目标（Agent 面朝墙壁） */
+/** Shame corners — error-state targets */
 const SHAME_CORNERS: { x: number; y: number; room: string; facingDir: Direction }[] = [
-  { x: 195, y: 175, room: 'showroom', facingDir: 'left' },     // 展示厅左上角
-  { x: 750, y: 160, room: 'manager', facingDir: 'up' },        // 调度中心左上角
-  { x: 195, y: 610, room: 'meeting', facingDir: 'left' },      // 会议室左上角
-  { x: 810, y: 490, room: 'workspace', facingDir: 'up' },      // 工位区左上角
-  { x: 810, y: 720, room: 'datacenter', facingDir: 'up' },     // 数据中心左上角
+  { x: 240, y: 200, room: 'showroom', facingDir: 'left' },
+  { x: 480, y: 160, room: 'manager', facingDir: 'up' },
+  { x: 980, y: 200, room: 'meeting', facingDir: 'up' },
+  { x: 460, y: 420, room: 'workspace', facingDir: 'left' },
+  { x: 1000, y: 720, room: 'datacenter', facingDir: 'right' },
 ];
 
 // ============================================================
 // 走廊节点网络 — 基于实际墙体门口位置
 // ============================================================
+// Open-plan PRIM8 studio — corridor graph is a soft navigation mesh
 const CORRIDOR_NODES: { x: number; y: number; id: string }[] = [
-  // 展示厅门口（Y=352 墙体间隙 X=384-416 正下方）
-  { x: 400, y: 365, id: 'SHOW_DOOR' },
-  // 左侧走廊中心（Y=352 与 Y=512 两道墙之间）
-  { x: 400, y: 430, id: 'COR_LEFT' },
-  // 会议室门口（Y=512 墙体间隙 X=384-416 正上方）
-  { x: 400, y: 500, id: 'MEET_DOOR' },
-  // 中心节点（左侧走廊与右侧开放区交汇处）
-  { x: 620, y: 430, id: 'COR_CENTER' },
-  // 上方转角（通往经理室门口）
-  { x: 670, y: 300, id: 'COR_UPPER' },
-  // 经理室门口（Y=288 墙体间隙 X=672-704）
-  { x: 688, y: 270, id: 'MGR_DOOR' },
-  // 右侧走廊（进入工位区/数据中心）
-  { x: 850, y: 430, id: 'COR_RIGHT' },
-  // 工位区内部
-  { x: 900, y: 550, id: 'WORK_AREA' },
-  // 数据仓库门口（Y=608-640 墙体间隙 X=832-864）
-  { x: 848, y: 624, id: 'DATA_DOOR' },
-  // 数据仓库内部
-  { x: 900, y: 750, id: 'DATA_AREA' },
+  { x: 360, y: 360, id: 'SHOW_DOOR' },
+  { x: 420, y: 420, id: 'COR_LEFT' },
+  { x: 860, y: 280, id: 'MEET_DOOR' },
+  { x: 600, y: 400, id: 'COR_CENTER' },
+  { x: 600, y: 300, id: 'COR_UPPER' },
+  { x: 560, y: 260, id: 'MGR_DOOR' },
+  { x: 720, y: 420, id: 'COR_RIGHT' },
+  { x: 600, y: 520, id: 'WORK_AREA' },
+  { x: 820, y: 600, id: 'DATA_DOOR' },
+  { x: 900, y: 680, id: 'DATA_AREA' },
 ];
 
 const CORRIDOR_EDGES: [string, string][] = [
   ['SHOW_DOOR', 'COR_LEFT'],
-  ['COR_LEFT', 'MEET_DOOR'],
   ['COR_LEFT', 'COR_CENTER'],
   ['COR_CENTER', 'COR_UPPER'],
   ['COR_UPPER', 'MGR_DOOR'],
+  ['COR_UPPER', 'MEET_DOOR'],
   ['COR_CENTER', 'COR_RIGHT'],
   ['COR_RIGHT', 'WORK_AREA'],
+  ['COR_RIGHT', 'DATA_DOOR'],
   ['WORK_AREA', 'DATA_DOOR'],
   ['DATA_DOOR', 'DATA_AREA'],
+  ['MEET_DOOR', 'COR_RIGHT'],
 ];
 
-// 房间出口对应的走廊节点
 const ROOM_CORRIDOR: Record<string, string> = {
   showroom: 'SHOW_DOOR',
   manager: 'MGR_DOOR',
   meeting: 'MEET_DOOR',
-  workspace: 'COR_RIGHT',
+  workspace: 'WORK_AREA',
   datacenter: 'DATA_DOOR',
 };
 
@@ -211,26 +202,26 @@ function cssColorToHex(css: string): number {
 
 // 预定义的不重叠初始站位 — 全部在走廊正中央和房间中心开阔地带
 const FIXED_SPAWN_POINTS: { x: number; y: number; room: string }[] = [
-  { x: 720, y: 190, room: 'manager' },      // 1. 调度中心正中央
-  { x: 350, y: 250, room: 'showroom' },      // 2. 展示厅正中央
-  { x: 620, y: 370, room: 'workspace' },     // 3. 主走廊中段
-  { x: 830, y: 400, room: 'workspace' },     // 4. 待命区中央
-  { x: 810, y: 680, room: 'datacenter' },    // 5. 数据中心正中央
-  { x: 620, y: 300, room: 'workspace' },     // 6. 主走廊上段
-  { x: 620, y: 460, room: 'workspace' },     // 7. 主走廊下段
-  { x: 350, y: 660, room: 'meeting' },       // 8. 协作室正中央
-  { x: 920, y: 400, room: 'workspace' },     // 9. 待命区右侧开阔
-  { x: 800, y: 190, room: 'manager' },       // 10. 调度中心右侧
-  { x: 250, y: 250, room: 'showroom' },      // 11. 展示厅左侧
-  { x: 720, y: 400, room: 'workspace' },     // 12. 走廊中间
-  { x: 900, y: 680, room: 'datacenter' },    // 13. 数据中心右侧
-  { x: 450, y: 660, room: 'meeting' },       // 14. 协作室右侧
-  { x: 620, y: 250, room: 'workspace' },     // 15. 走廊最上段
-  { x: 520, y: 370, room: 'workspace' },     // 16. 走廊左侧
-  { x: 450, y: 250, room: 'showroom' },      // 17. 展示厅右侧
-  { x: 720, y: 680, room: 'datacenter' },    // 18. 数据中心左侧
-  { x: 520, y: 460, room: 'workspace' },     // 19. 走廊左下
-  { x: 250, y: 660, room: 'meeting' },       // 20. 协作室左侧
+  { x: 560, y: 240, room: 'manager' },       // 1. Control wall
+  { x: 300, y: 320, room: 'showroom' },      // 2. Creative wall
+  { x: 560, y: 480, room: 'workspace' },     // 3. Studio center
+  { x: 620, y: 540, room: 'workspace' },     // 4. Studio desk
+  { x: 880, y: 700, room: 'datacenter' },    // 5. Kitchen / edit
+  { x: 920, y: 280, room: 'meeting' },       // 6. Lounge
+  { x: 500, y: 540, room: 'workspace' },     // 7. Studio desk
+  { x: 860, y: 320, room: 'meeting' },       // 8. Lounge edge
+  { x: 640, y: 260, room: 'manager' },       // 9. Control right
+  { x: 940, y: 720, room: 'datacenter' },    // 10. Dining
+  { x: 280, y: 480, room: 'showroom' },      // 11. Left gallery
+  { x: 680, y: 480, room: 'workspace' },     // 12. Studio right
+  { x: 820, y: 660, room: 'datacenter' },    // 13. Kitchen left
+  { x: 960, y: 300, room: 'meeting' },       // 14. Lounge right
+  { x: 480, y: 260, room: 'manager' },       // 15. Control left
+  { x: 520, y: 440, room: 'workspace' },     // 16. Studio north
+  { x: 340, y: 560, room: 'showroom' },      // 17. Gallery south
+  { x: 900, y: 760, room: 'datacenter' },    // 18. Kitchen south
+  { x: 600, y: 360, room: 'workspace' },     // 19. Studio entry
+  { x: 400, y: 400, room: 'showroom' },      // 20. Mid-left
 ];
 
 function buildAgentSpawns() {
@@ -401,15 +392,16 @@ export class OfficeScene extends Phaser.Scene {
         ? t(room.label.slice(2, -2))
         : room.label;
       const label = this.add.text(room.labelPos.x, room.labelPos.y, labelText, {
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        color: '#ffd700',
-        stroke: '#000000',
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '13px',
+        color: '#ec4899',
+        stroke: '#0a0a0e',
         strokeThickness: 4,
         align: 'center',
+        fontStyle: 'bold',
       });
       label.setOrigin(0.5);
-      label.setAlpha(0.85);
+      label.setAlpha(0.9);
       label.setDepth(10000);
     }
   }
@@ -623,17 +615,23 @@ export class OfficeScene extends Phaser.Scene {
       const sprite = this.add.sprite(0, 0, spawn.spriteKey);
       sprite.play(`${spawn.spriteKey}-idle-down`);
 
-      const nameTag = this.add.text(0, -42, spawn.name, {
-        fontFamily: 'monospace',
-        fontSize: '13px',
-        color: '#ffffff',
-        stroke: '#000000',
-        strokeThickness: 3,
-        shadow: { offsetX: 1, offsetY: 1, color: '#000', blur: 2, fill: true },
+      // Skydive-style floating name pill
+      const nameTag = this.add.text(0, -44, spawn.name, {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '11px',
+        color: '#111111',
+        fontStyle: 'bold',
+        padding: { x: 8, y: 3 },
+        backgroundColor: '#ffffff',
       });
       nameTag.setOrigin(0.5);
+      // Soft rounded look via slight alpha + magenta underline accent
+      nameTag.setAlpha(0.96);
 
-      const container = this.add.container(pos.x, pos.y, [sprite, nameTag]);
+      const accent = this.add.rectangle(0, -33, Math.max(24, nameTag.width * 0.45), 2, 0xec4899, 0.9);
+      accent.setOrigin(0.5);
+
+      const container = this.add.container(pos.x, pos.y, [sprite, accent, nameTag]);
       container.setDepth(pos.y + 10000);
       container.setSize(32, 64);
       container.setInteractive({ useHandCursor: true });
@@ -641,7 +639,7 @@ export class OfficeScene extends Phaser.Scene {
       container.on('pointerdown', () => {
         EventBus.emit('agent:clicked', { agentId: spawn.agentId, name: spawn.name });
       });
-      container.on('pointerover', () => sprite.setTint(0xffd700));
+      container.on('pointerover', () => sprite.setTint(0xec4899));
       container.on('pointerout', () => sprite.clearTint());
 
       this.agents.push({

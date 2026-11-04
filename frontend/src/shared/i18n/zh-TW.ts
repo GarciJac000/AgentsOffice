@@ -19,7 +19,7 @@ export const zhTW: Record<string, string> = {
   'agent.noDescription': '暫無描述',
 
   // ========== 聊天框 ==========
-  'chat.welcome': '歡迎來到 AgentsOffice！\n直接輸入需求，調度員會自動分配合適的 Agent。',
+  'chat.welcome': '歡迎來到 PRIM8 Studio。\n直接輸入需求，調度員會自動分配合適的 Agent。',
   'chat.inputPlaceholder': '輸入需求，調度員自動分配',
   'chat.inputPrivate': '和{agent}說點什麼...',
   'chat.send': '傳送',
@@ -79,11 +79,11 @@ export const zhTW: Record<string, string> = {
   'db.error': '查詢錯誤',
 
   // ========== 房間名稱 ==========
-  'room.showroom': '展示廳',
-  'room.manager': '調度中心',
-  'room.meeting': '協作室',
-  'room.workspace': '待命區',
-  'room.datacenter': '資料中心',
+  'room.showroom': '創意牆',
+  'room.manager': '控制室',
+  'room.meeting': '休息區',
+  'room.workspace': '工作室地板',
+  'room.datacenter': '廚房 / 剪輯',
 
   // ========== 內建 Agent (PRIM8 Productions) ==========
   'builtin.dispatcher': '調度員',

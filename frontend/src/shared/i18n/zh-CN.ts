@@ -19,7 +19,7 @@ export const zhCN: Record<string, string> = {
   'agent.noDescription': '暂无描述',
 
   // ========== 聊天框 ==========
-  'chat.welcome': '欢迎来到 AgentsOffice！\n直接输入需求，调度员会自动分配合适的 Agent。',
+  'chat.welcome': '欢迎来到 PRIM8 Studio。\n直接输入需求，调度员会自动分配合适的 Agent。',
   'chat.inputPlaceholder': '输入需求，调度员自动分配',
   'chat.inputPrivate': '和{agent}说点什么...',
   'chat.send': '发送',
@@ -79,11 +79,11 @@ export const zhCN: Record<string, string> = {
   'db.error': '查询错误',
 
   // ========== 房间名称 ==========
-  'room.showroom': '展示厅',
-  'room.manager': '调度中心',
-  'room.meeting': '协作室',
-  'room.workspace': '待命区',
-  'room.datacenter': '数据中心',
+  'room.showroom': '创意墙',
+  'room.manager': '控制室',
+  'room.meeting': '休息区',
+  'room.workspace': '工作室地板',
+  'room.datacenter': '厨房 / 剪辑',
 
   // ========== 内置 Agent (PRIM8 Productions) ==========
   'builtin.dispatcher': '调度员',

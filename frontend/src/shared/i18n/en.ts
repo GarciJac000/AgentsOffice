@@ -19,7 +19,7 @@ export const en: Record<string, string> = {
   'agent.noDescription': 'No description',
 
   // ========== Chat Box ==========
-  'chat.welcome': 'Welcome to AgentsOffice!\nType your request and the Dispatcher will assign the right Agent.',
+  'chat.welcome': 'Welcome to PRIM8 Studio.\nDrop a request and the Dispatcher will route it to the right agent.',
   'chat.inputPlaceholder': 'Type a request, Dispatcher auto-assigns',
   'chat.inputPrivate': 'Say something to {agent}...',
   'chat.send': 'Send',
@@ -79,11 +79,11 @@ export const en: Record<string, string> = {
   'db.error': 'Query error',
 
   // ========== Room Names ==========
-  'room.showroom': 'Showroom',
-  'room.manager': 'Command Center',
-  'room.meeting': 'Meeting Room',
-  'room.workspace': 'Workspace',
-  'room.datacenter': 'Data Center',
+  'room.showroom': 'Creative Wall',
+  'room.manager': 'Control',
+  'room.meeting': 'Lounge',
+  'room.workspace': 'Studio Floor',
+  'room.datacenter': 'Kitchen / Edit',
 
   // ========== Built-in Agents (PRIM8 Productions) ==========
   'builtin.dispatcher': 'Dispatcher',

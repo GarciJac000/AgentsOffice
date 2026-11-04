@@ -17,17 +17,22 @@ export interface AgentRegistryEntry {
 
 /** sprite 映射：slug → 精灵 key。后端不管前端素材，由前端维护。 */
 const SPRITE_MAP: Record<string, string> = {
-  dispatcher: 'char_01',
-  jarvis: 'char_02',
-  aria: 'char_03',
-  simone: 'char_05',
-  spike: 'char_06',
-  dre: 'char_07',
-  shakir: 'char_08',
-  echo: 'char_09',
-  data_engineer: 'char_04',
+  dispatcher: 'prim8_dispatcher',
+  jarvis: 'prim8_jarvis',
+  aria: 'prim8_aria',
+  simone: 'prim8_simone',
+  spike: 'prim8_spike',
+  dre: 'prim8_dre',
+  shakir: 'prim8_shakir',
+  echo: 'prim8_echo',
+  data_engineer: 'prim8_data_engineer',
 };
 let nextSpriteIndex = 10; // 用户自定义 agent 从 char_10 开始
+
+/** Portrait path for React UI (PRIM8 character cards). */
+export function getPortraitUrl(slug: string): string {
+  return `/assets/portraits/${slug}.jpg`;
+}
 
 /** 最大可用精灵数（素材包提供 20 个预制角色） */
 const MAX_SPRITES = 20;

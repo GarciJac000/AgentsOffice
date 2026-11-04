@@ -19,7 +19,7 @@ export const ja: Record<string, string> = {
   'agent.noDescription': '説明はまだありません',
 
   // ========== チャットボックス ==========
-  'chat.welcome': 'AgentsOffice へようこそ！\nご要望を入力すると、ディスパッチャーが最適なエージェントに自動で割り当てます。',
+  'chat.welcome': 'PRIM8 Studio へようこそ。\nご要望を入力すると、ディスパッチャーが最適なエージェントに自動で割り当てます。',
   'chat.inputPlaceholder': 'ご要望を入力してください。ディスパッチャーが自動で割り当てます',
   'chat.inputPrivate': '{agent}にメッセージを送る...',
   'chat.send': '送信',
@@ -79,11 +79,11 @@ export const ja: Record<string, string> = {
   'db.error': 'クエリエラー',
 
   // ========== ルーム名 ==========
-  'room.showroom': 'ショールーム',
-  'room.manager': '司令室',
-  'room.meeting': 'コラボルーム',
-  'room.workspace': 'ワークスペース',
-  'room.datacenter': 'データセンター',
+  'room.showroom': 'クリエイティブウォール',
+  'room.manager': 'コントロール',
+  'room.meeting': 'ラウンジ',
+  'room.workspace': 'スタジオフロア',
+  'room.datacenter': 'キッチン / 編集',
 
   // ========== 組み込みエージェント (PRIM8 Productions) ==========
   'builtin.dispatcher': 'ディスパッチャー',
