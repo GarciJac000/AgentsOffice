@@ -34,8 +34,8 @@ export class OfficeApp {
   constructor(container: HTMLElement) {
     this.container = container;
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x12131a);
-    this.scene.fog = new THREE.Fog(0x12131a, 45, 80);
+    this.scene.background = new THREE.Color(0x16141c);
+    this.scene.fog = new THREE.Fog(0x16141c, 48, 85);
 
     const aspect = this.viewportAspect();
     const frustum = 9.5;
@@ -55,6 +55,8 @@ export class OfficeApp {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.08;
     this.renderer.domElement.style.display = 'block';
     this.renderer.domElement.style.width = '100%';
     this.renderer.domElement.style.height = '100%';
@@ -98,29 +100,48 @@ export class OfficeApp {
   }
 
   private setupLights() {
-    const hemi = new THREE.HemisphereLight(0xfff4e6, 0x8a9bb0, 0.85);
+    // Warm studio sky / soft floor bounce
+    const hemi = new THREE.HemisphereLight(0xfff4e8, 0x9aa090, 0.85);
     this.scene.add(hemi);
 
-    const sun = new THREE.DirectionalLight(0xfff0d6, 1.35);
-    sun.position.set(12, 18, 8);
+    // Key sun through window bay — softer, less stripe-dominant
+    const sun = new THREE.DirectionalLight(0xffedd5, 0.85);
+    sun.position.set(12, 20, 5);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.mapSize.set(1024, 1024);
     sun.shadow.camera.near = 1;
     sun.shadow.camera.far = 50;
-    sun.shadow.camera.left = -16;
-    sun.shadow.camera.right = 16;
-    sun.shadow.camera.top = 16;
-    sun.shadow.camera.bottom = -16;
-    sun.shadow.bias = -0.0002;
+    sun.shadow.camera.left = -15;
+    sun.shadow.camera.right = 15;
+    sun.shadow.camera.top = 15;
+    sun.shadow.camera.bottom = -15;
+    sun.shadow.bias = -0.00035;
+    sun.shadow.normalBias = 0.04;
     this.scene.add(sun);
 
-    const fill = new THREE.DirectionalLight(0xb4c6ff, 0.35);
-    fill.position.set(-10, 8, -6);
+    // Cool window fill (right / back bay)
+    const fill = new THREE.DirectionalLight(0xc5d4e8, 0.5);
+    fill.position.set(-8, 10, -8);
     this.scene.add(fill);
 
-    const pinkRim = new THREE.PointLight(0xec4899, 0.45, 24);
-    pinkRim.position.set(0, 3.5, -ROOM_SIZE.depth / 2 + 1);
+    // Soft bounce from floor / wood
+    const bounce = new THREE.DirectionalLight(0xe8d5b5, 0.28);
+    bounce.position.set(0, -4, 4);
+    this.scene.add(bounce);
+
+    // PRIM8 screen glow / pink rim at video wall
+    const pinkRim = new THREE.PointLight(0xec4899, 0.55, 16, 2);
+    pinkRim.position.set(0, 2.6, -ROOM_SIZE.depth / 2 + 1.2);
     this.scene.add(pinkRim);
+
+    // Warm kitchen / lounge accents
+    const loungeFill = new THREE.PointLight(0xffc4a8, 0.32, 10, 2);
+    loungeFill.position.set(5.5, 2.2, -4);
+    this.scene.add(loungeFill);
+
+    const kitchenFill = new THREE.PointLight(0xffe8c8, 0.28, 9, 2);
+    kitchenFill.position.set(5.5, 2.4, 4.2);
+    this.scene.add(kitchenFill);
   }
 
   private placeCamera() {

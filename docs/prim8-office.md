@@ -16,15 +16,15 @@ Default AgentsOffice roster + visual theme for Jacob’s PRIM8 Productions studi
 
 ## Visual design
 
-The office is a **full 3D isometric Three.js scene** (orthographic camera, soft shadows) inspired by the Skydive / Gather open floor plan:
+The office is a **full 3D isometric Three.js scene** (orthographic camera, soft studio lighting, zone rugs, neon PRIM8 video wall) inspired by the Skydive / Gather open floor plan:
 
 | Zone | Room id | Notes |
 |------|---------|-------|
-| Creative Wall | `showroom` | Left wall shelves, posters, plants |
-| Control | `manager` | Back-wall desks under PRIM8 monitor |
-| Lounge | `meeting` | Sofa + coffee table |
-| Studio Floor | `workspace` | Center 2×2 desk cluster on a rug |
-| Kitchen / Edit | `datacenter` | Fridge, dining table, vending |
+| Creative Wall | `showroom` | Left wall shelves, posters, runner rug, plants |
+| Control | `manager` | Back-wall desks under neon PRIM8 video wall |
+| Lounge | `meeting` | Sofa, coffee table, round rug |
+| Studio Floor | `workspace` | Center 2×2 desk cluster on zone rug |
+| Kitchen / Edit | `datacenter` | Fridge, counter, dining/edit table, vending |
 
 Agents use **authored claymation GLB models** (`frontend/public/assets/models/agents/`), loaded via `GLTFLoader` in `frontend/src/three/avatars.ts`:
 
