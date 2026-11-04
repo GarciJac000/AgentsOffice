@@ -26,15 +26,19 @@ The office is a **full 3D isometric Three.js scene** (orthographic camera, soft 
 | Studio Floor | `workspace` | Center 2×2 desk cluster on a rug |
 | Kitchen / Edit | `datacenter` | Fridge, dining table, vending |
 
-Agents are camera-facing PRIM8 character billboards cut from the brand renders (`assets/agents/{slug}.png`) with CSS2D name pills. Matching portrait cards power the React UI (`assets/portraits/{slug}.jpg`).
+Agents are **real 3D avatars** (`frontend/src/three/avatars.ts`) with look-specific streetwear meshes:
 
-Rebuild cutouts:
+| Look | Signature | Agents |
+|------|-----------|--------|
+| cameraman | Cap, backpack, cinema camera | DRE, SPIKE |
+| beanie | Beanie, sunglasses, crossed arms | Jarvis, SHAKIR |
+| executive | Bun, glasses, gold hoops, laptop | ARIA, Dispatcher |
+| street | Curly ponytail, gold hoops, pink kicks | SIMONE |
+| producer | Backward cap, headphones | Echo, Data Engineer |
 
-```bash
-python3 scripts/cutout_prim8_agents.py
-```
+Walk/idle limb animation + facing toward movement. Portrait cards still power the React UI (`assets/portraits/{slug}.jpg`).
 
-Source: `frontend/src/three/` (`OfficeApp.ts`, `buildOffice.ts`, `agents.ts`, `rooms.ts`).
+Source: `frontend/src/three/` (`OfficeApp.ts`, `buildOffice.ts`, `agents.ts`, `avatars.ts`, `rooms.ts`).
 
 ## Agents
 
