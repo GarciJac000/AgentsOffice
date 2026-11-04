@@ -19,7 +19,7 @@ export const zhTW: Record<string, string> = {
   'agent.noDescription': '暫無描述',
 
   // ========== 聊天框 ==========
-  'chat.welcome': '歡迎來到 AgentsOffice！\n直接輸入需求，調度員會自動分配合適的 Agent。',
+  'chat.welcome': '歡迎來到 PRIM8 Studio。\n直接輸入需求，調度員會自動分配合適的 Agent。',
   'chat.inputPlaceholder': '輸入需求，調度員自動分配',
   'chat.inputPrivate': '和{agent}說點什麼...',
   'chat.send': '傳送',
@@ -79,17 +79,29 @@ export const zhTW: Record<string, string> = {
   'db.error': '查詢錯誤',
 
   // ========== 房間名稱 ==========
-  'room.showroom': '展示廳',
-  'room.manager': '調度中心',
-  'room.meeting': '協作室',
-  'room.workspace': '待命區',
-  'room.datacenter': '資料中心',
+  'room.showroom': '創意牆',
+  'room.manager': '控制室',
+  'room.meeting': '休息區',
+  'room.workspace': '工作室地板',
+  'room.datacenter': '廚房 / 剪輯',
 
-  // ========== 內建 Agent ==========
+  // ========== 內建 Agent (PRIM8 Productions) ==========
   'builtin.dispatcher': '調度員',
   'builtin.dispatcher.role': '任務分配與調度',
-  'builtin.assistant': '助理',
-  'builtin.assistant.role': '通用工作助理',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': '辦公室統籌與協調',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / 曲庫與創意甄選',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': '創意方向與藝人發展',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': '錄音製作與專案推進',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': '音樂 / 音訊製作人',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': '演出與發行營運',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': '混音 / 聲音與訊號鏈',
   'builtin.data_engineer': '資料工程師',
   'builtin.data_engineer.role': '資料管理與上傳',
 

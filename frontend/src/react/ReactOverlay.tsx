@@ -128,31 +128,36 @@ export const ReactOverlay: React.FC = () => {
           top: 8,
           left: 8,
           pointerEvents: 'auto',
-          background: 'rgba(0, 0, 0, 0.7)',
-          border: '2px solid #4ade80',
-          padding: '6px 12px',
-          fontFamily: 'monospace',
+          background: 'rgba(8, 8, 12, 0.88)',
+          border: '1.5px solid #ec4899',
+          borderRadius: 12,
+          padding: '7px 14px',
+          fontFamily: 'system-ui, sans-serif',
           fontSize: '12px',
-          color: '#4ade80',
-          imageRendering: 'pixelated',
+          color: '#f9a8d4',
           display: 'flex',
           alignItems: 'center',
           gap: 10,
+          boxShadow: '0 8px 24px rgba(236,72,153,0.15)',
         }}>
-          <span>AgentsOffice v0.1</span>
-          <span style={{ color: '#88cc99' }}>|</span>
+          <span style={{ fontWeight: 800, letterSpacing: 0.6 }}>
+            PRIM<span style={{ color: '#ec4899' }}>8</span>
+          </span>
+          <span style={{ color: '#52525b' }}>|</span>
+          <span style={{ color: '#e4e4e7' }}>Studio</span>
+          <span style={{ color: '#52525b' }}>|</span>
           <span>{t('status.agents', { count: String(agentCount), max: String(MAX_AGENTS) })}</span>
           {agentCount < MAX_AGENTS && (
             <button
               onClick={() => EventBus.emit('agent:add-new', {})}
               title={t('status.addAgent')}
               style={{
-                background: '#4ade80',
-                color: '#000',
+                background: '#ec4899',
+                color: '#fff',
                 border: 'none',
-                borderRadius: 3,
-                width: 20,
-                height: 20,
+                borderRadius: 6,
+                width: 22,
+                height: 22,
                 fontSize: '14px',
                 fontWeight: 'bold',
                 cursor: 'pointer',

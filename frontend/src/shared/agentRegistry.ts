@@ -17,11 +17,23 @@ export interface AgentRegistryEntry {
 
 /** sprite 映射：slug → 精灵 key。后端不管前端素材，由前端维护。 */
 const SPRITE_MAP: Record<string, string> = {
-  dispatcher: 'char_01',
-  assistant: 'char_02',
-  data_engineer: 'char_04',
+  dispatcher: 'prim8_dispatcher',
+  jarvis: 'prim8_jarvis',
+  aria: 'prim8_aria',
+  simone: 'prim8_simone',
+  spike: 'prim8_spike',
+  dre: 'prim8_dre',
+  shakir: 'prim8_shakir',
+  echo: 'prim8_echo',
+  data_engineer: 'prim8_data_engineer',
 };
-let nextSpriteIndex = 5; // 用户自定义 agent 从 char_05 开始
+let nextSpriteIndex = 10; // 用户自定义 agent 从 char_10 开始
+
+/** Portrait path for React UI (PRIM8 character cards). */
+export function getPortraitUrl(slug: string): string {
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}assets/portraits/${slug}.jpg`;
+}
 
 /** 最大可用精灵数（素材包提供 20 个预制角色） */
 const MAX_SPRITES = 20;
@@ -45,9 +57,15 @@ import { t } from './i18n';
 
 function getFallbackAgents(): AgentRegistryEntry[] {
   return [
-    { slug: 'dispatcher', displayName: t('builtin.dispatcher'), role: t('builtin.dispatcher.role'), color: '#ff6b6b', roomId: 'manager', phaserAgentId: 'agt_dispatcher', isDispatcher: true },
-    { slug: 'assistant', displayName: t('builtin.assistant'), role: t('builtin.assistant.role'), color: '#4ade80', roomId: 'workspace', phaserAgentId: 'agt_assistant', isDispatcher: false },
-    { slug: 'data_engineer', displayName: t('builtin.data_engineer'), role: t('builtin.data_engineer.role'), color: '#a78bfa', roomId: 'datacenter', phaserAgentId: 'agt_data_eng', isDispatcher: false },
+    { slug: 'dispatcher', displayName: t('builtin.dispatcher'), role: t('builtin.dispatcher.role'), color: '#C99B54', roomId: 'manager', phaserAgentId: 'agt_dispatcher', isDispatcher: true },
+    { slug: 'jarvis', displayName: t('builtin.jarvis'), role: t('builtin.jarvis.role'), color: '#ec4899', roomId: 'manager', phaserAgentId: 'agt_jarvis', isDispatcher: false },
+    { slug: 'aria', displayName: t('builtin.aria'), role: t('builtin.aria.role'), color: '#4ade80', roomId: 'workspace', phaserAgentId: 'agt_aria', isDispatcher: false },
+    { slug: 'simone', displayName: t('builtin.simone'), role: t('builtin.simone.role'), color: '#f472b6', roomId: 'workspace', phaserAgentId: 'agt_simone', isDispatcher: false },
+    { slug: 'spike', displayName: t('builtin.spike'), role: t('builtin.spike.role'), color: '#a78bfa', roomId: 'workspace', phaserAgentId: 'agt_spike', isDispatcher: false },
+    { slug: 'dre', displayName: t('builtin.dre'), role: t('builtin.dre.role'), color: '#60a5fa', roomId: 'datacenter', phaserAgentId: 'agt_dre', isDispatcher: false },
+    { slug: 'shakir', displayName: t('builtin.shakir'), role: t('builtin.shakir.role'), color: '#2dd4bf', roomId: 'workspace', phaserAgentId: 'agt_shakir', isDispatcher: false },
+    { slug: 'echo', displayName: t('builtin.echo'), role: t('builtin.echo.role'), color: '#22d3ee', roomId: 'datacenter', phaserAgentId: 'agt_echo', isDispatcher: false },
+    { slug: 'data_engineer', displayName: t('builtin.data_engineer'), role: t('builtin.data_engineer.role'), color: '#94a3b8', roomId: 'datacenter', phaserAgentId: 'agt_data_eng', isDispatcher: false },
   ];
 }
 

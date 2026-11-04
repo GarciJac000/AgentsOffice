@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { EventBus } from '../shared/events/EventBus';
-import { loadAgentRegistry, getAgentsCached } from '../shared/agentRegistry';
+import { loadAgentRegistry, getAgentsCached, getPortraitUrl } from '../shared/agentRegistry';
 import { t } from '../shared/i18n';
 
 // 模型名称显示映射 — 从 /api/v1/office/models 动态加载
@@ -244,22 +244,30 @@ export const AgentStatusBar: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                {/* 紧凑头部：圆点 + 名称 + 状态 */}
+                {/* Compact header: portrait + name + status */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    background: isWorking ? agent.color : (agent.active ? '#887755' : '#776655'),
-                    boxShadow: isWorking ? `0 0 6px ${agent.color}` : 'none',
-                    border: `1.5px solid ${agent.color}`,
-                    flexShrink: 0,
-                  }} />
+                  <img
+                    src={getPortraitUrl(agent.slug)}
+                    alt=""
+                    style={{
+                      width: 18,
+                      height: 18,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: `1.5px solid ${isWorking ? agent.color : '#ec4899'}`,
+                      boxShadow: isWorking ? `0 0 6px ${agent.color}` : 'none',
+                      flexShrink: 0,
+                      background: '#111',
+                    }}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
                   <span style={{ color: agent.color, fontWeight: 'bold', fontSize: '13px' }}>
                     {agent.name}
                   </span>
                   <span style={{
-                    color: isWorking ? '#66ff88' : '#ddcc99',
+                    color: isWorking ? '#f9a8d4' : '#a1a1aa',
                     fontSize: '11px',
                     fontWeight: isWorking ? 'bold' : 'normal',
                     marginLeft: 'auto',
@@ -271,15 +279,15 @@ export const AgentStatusBar: React.FC = () => {
                 {/* 展开时显示的详细信息 */}
                 {expanded && (
                   <>
-                    <div style={{ color: '#ccbb88', fontSize: '11px', marginTop: 3, lineHeight: 1.3 }}>
+                    <div style={{ color: '#a1a1aa', fontSize: '11px', marginTop: 3, lineHeight: 1.3 }}>
                       {agent.role}
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3 }}>
-                      <span style={{ fontSize: '10px', color: agent.active ? '#55dd77' : '#aa8855' }}>
+                      <span style={{ fontSize: '10px', color: agent.active ? '#ec4899' : '#71717a' }}>
                         {agent.active ? '\u25cf' : '\u25cb'}
                       </span>
-                      <span style={{ color: agent.active ? '#ddcc88' : '#aa9977', fontSize: '11px' }}>
+                      <span style={{ color: agent.active ? '#d4d4d8' : '#71717a', fontSize: '11px' }}>
                         {agent.active ? `${agent.modelDisplay}` : t('config.selectModel')}
                       </span>
                     </div>
@@ -290,11 +298,11 @@ export const AgentStatusBar: React.FC = () => {
                       borderTop: '1px solid #55442233',
                     }}>
                       {agent.active ? (
-                        <span style={{ color: '#ccaa66', fontSize: '11px' }}>
+                        <span style={{ color: '#f9a8d4', fontSize: '11px' }}>
                           {t('status.tokens', { count: formatTokens(totalTokens) })}
                         </span>
                       ) : (
-                        <span style={{ color: '#887766', fontSize: '11px' }}>
+                        <span style={{ color: '#52525b', fontSize: '11px' }}>
                           {t('config.title')}
                         </span>
                       )}
@@ -305,7 +313,7 @@ export const AgentStatusBar: React.FC = () => {
                 {/* 折叠时只显示 token 摘要 */}
                 {!expanded && agent.active && (
                   <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
-                    <span style={{ color: '#ccaa66', fontSize: '10px' }}>
+                    <span style={{ color: '#f9a8d4', fontSize: '10px' }}>
                       {formatTokens(totalTokens)} tok
                     </span>
                   </div>
@@ -336,12 +344,12 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: 4,
-    background: 'rgba(20, 15, 8, 0.85)',
-    border: '1px solid #887755',
-    borderRadius: 3,
-    padding: '2px 8px',
-    fontFamily: 'monospace',
-    color: '#ccbb88',
+    background: 'rgba(10, 10, 14, 0.9)',
+    border: '1px solid #3f3f46',
+    borderRadius: 8,
+    padding: '3px 10px',
+    fontFamily: 'system-ui, sans-serif',
+    color: '#f9a8d4',
     cursor: 'pointer',
     userSelect: 'none' as const,
   },
@@ -354,11 +362,11 @@ const styles: Record<string, React.CSSProperties> = {
     width: 160,
     display: 'flex',
     flexDirection: 'column' as const,
-    background: 'rgba(20, 15, 8, 0.93)',
-    border: '2px solid #887755',
-    borderRadius: 5,
+    background: 'rgba(10, 10, 14, 0.94)',
+    border: '1.5px solid #3f3f46',
+    borderRadius: 10,
     padding: '6px 8px',
-    fontFamily: 'monospace',
+    fontFamily: 'system-ui, sans-serif',
     boxSizing: 'border-box' as const,
   },
 };

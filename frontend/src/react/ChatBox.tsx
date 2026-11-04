@@ -173,10 +173,10 @@ const tableStyles: Record<string, React.CSSProperties> = {
     padding: '6px 8px',
     borderBottom: '2px solid #555',
     textAlign: 'left',
-    color: '#ffd700',
+    color: '#ec4899',
     fontWeight: 'bold',
     whiteSpace: 'nowrap',
-    background: 'rgba(255, 215, 0, 0.08)',
+    background: 'rgba(236, 72, 153, 0.10)',
   },
   td: {
     padding: '5px 8px',
@@ -348,7 +348,7 @@ export const ChatBox: React.FC = () => {
       {
         slug: GROUP_CONTACT_SLUG,
         name: t('agent.groupChat'),
-        color: '#ffd700',
+        color: '#ec4899',
         role: t('agent.groupChatDesc'),
         lastMessage: lastMessages[GROUP_CONTACT_SLUG],
       },
@@ -895,7 +895,7 @@ export const ChatBox: React.FC = () => {
   );
 
   const activeContactDef = activeContact === GROUP_CONTACT_SLUG
-    ? { name: t('agent.groupChat'), color: '#ffd700' }
+    ? { name: t('agent.groupChat'), color: '#ec4899' }
     : agents.find((a) => a.slug === activeContact) || { name: activeContact, color: '#888' };
 
   const getAgentColor = (slug?: string) =>
@@ -919,7 +919,7 @@ export const ChatBox: React.FC = () => {
       <div
         style={{
           ...styles.resizeHandle,
-          ...(resizing ? { background: 'rgba(74, 222, 128, 0.4)' } : {}),
+          ...(resizing ? { background: 'rgba(236, 72, 153, 0.35)' } : {}),
         }}
         onMouseDown={handleResizeStart}
       />
@@ -952,7 +952,7 @@ export const ChatBox: React.FC = () => {
                 title="会话历史"
                 style={{
                   ...styles.headerBtn,
-                  color: showHistory ? '#ffd700' : '#888',
+                  color: showHistory ? '#ec4899' : '#888',
                 }}
               >
                 {showHistory ? '✕' : '☰'}
@@ -1080,9 +1080,9 @@ export const ChatBox: React.FC = () => {
                                     onClick={() => toggleProductSelection(p.product_id)}
                                     style={{
                                       ...skillStyles.productCard,
-                                      borderColor: isSelected ? '#ffd700' : '#333',
+                                      borderColor: isSelected ? '#ec4899' : '#333',
                                       background: isSelected
-                                        ? 'rgba(255, 215, 0, 0.08)'
+                                        ? 'rgba(236, 72, 153, 0.10)'
                                         : 'rgba(255, 255, 255, 0.03)',
                                       cursor: 'pointer',
                                     }}
@@ -1162,7 +1162,7 @@ export const ChatBox: React.FC = () => {
                           {msg.skillData.payload.price_range.savings > 0 && (
                             <div style={skillStyles.priceItem}>
                               <span style={{ color: '#888' }}>可省</span>
-                              <span style={{ color: '#ffd700', fontSize: 18, fontWeight: 'bold' }}>
+                              <span style={{ color: '#ec4899', fontSize: 18, fontWeight: 'bold' }}>
                                 ¥{msg.skillData.payload.price_range.savings}
                               </span>
                             </div>
@@ -1173,7 +1173,7 @@ export const ChatBox: React.FC = () => {
                             {Object.entries(msg.skillData.payload.promotions_summary).map(
                               ([platform, promos]) => (
                                 <div key={platform} style={{ marginBottom: 4 }}>
-                                  <span style={{ color: '#ffd700', fontSize: 11 }}>{platform}: </span>
+                                  <span style={{ color: '#ec4899', fontSize: 11 }}>{platform}: </span>
                                   <span style={{ color: '#aaa', fontSize: 11 }}>
                                     {(promos as string[]).join('、')}
                                   </span>
@@ -1284,7 +1284,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    background: 'rgba(10, 10, 30, 0.95)',
+    background: 'rgba(8, 8, 12, 0.96)',
     borderLeft: '2px solid #444',
     pointerEvents: 'auto',
     fontFamily: 'monospace',
@@ -1348,7 +1348,7 @@ const styles: Record<string, React.CSSProperties> = {
     left: 0,
     right: 0,
     bottom: 56,
-    background: 'rgba(8, 8, 24, 0.98)',
+    background: 'rgba(8, 8, 12, 0.98)',
     zIndex: 150,
     display: 'flex',
     flexDirection: 'column' as const,
@@ -1361,7 +1361,7 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     fontSize: 14,
-    color: '#ffd700',
+    color: '#ec4899',
     fontWeight: 'bold',
     flexShrink: 0,
   },
@@ -1387,7 +1387,7 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'background 0.1s',
   },
   historyItemActive: {
-    background: 'rgba(255, 215, 0, 0.1)',
+    background: 'rgba(236, 72, 153, 0.12)',
     borderLeft: '3px solid #ffd700',
   },
   historyItemMain: {
@@ -1430,7 +1430,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   loadingOverlay: {
     textAlign: 'center' as const,
-    color: '#ffd700',
+    color: '#ec4899',
     padding: '12px 0',
     fontSize: 13,
     borderBottom: '1px solid #333',
@@ -1462,7 +1462,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 'bold',
   },
   userBubble: {
-    background: 'rgba(74, 222, 128, 0.15)',
+    background: 'rgba(236, 72, 153, 0.15)',
     border: '1px solid rgba(74, 222, 128, 0.35)',
     borderRadius: '4px',
     padding: '10px 12px',
@@ -1481,7 +1481,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   mentionMenu: {
     padding: '6px',
-    background: 'rgba(20, 20, 50, 0.98)',
+    background: 'rgba(12, 12, 16, 0.98)',
     border: '1px solid #555',
     borderRadius: '4px',
     margin: '0 14px',
@@ -1514,10 +1514,10 @@ const styles: Record<string, React.CSSProperties> = {
     outline: 'none',
   },
   sendBtn: {
-    background: 'rgba(74, 222, 128, 0.25)',
+    background: 'rgba(236, 72, 153, 0.25)',
     border: '1px solid #4ade80',
     borderRadius: '4px',
-    color: '#4ade80',
+    color: '#ec4899',
     padding: '10px 16px',
     cursor: 'pointer',
     fontFamily: 'monospace',
@@ -1575,7 +1575,7 @@ const styles: Record<string, React.CSSProperties> = {
 const skillStyles: Record<string, React.CSSProperties> = {
   startMsg: {
     fontSize: 13,
-    color: '#ffd700',
+    color: '#ec4899',
     padding: '6px 10px',
     borderLeft: '3px solid #ffd700',
     background: 'rgba(255, 215, 0, 0.05)',
@@ -1590,9 +1590,9 @@ const skillStyles: Record<string, React.CSSProperties> = {
   resultsHeader: {
     padding: '8px 12px',
     fontSize: 13,
-    color: '#ffd700',
+    color: '#ec4899',
     fontWeight: 'bold',
-    background: 'rgba(255, 215, 0, 0.08)',
+    background: 'rgba(236, 72, 153, 0.10)',
     borderBottom: '1px solid #333',
   },
   platformGroup: {
@@ -1620,7 +1620,7 @@ const skillStyles: Record<string, React.CSSProperties> = {
   },
   checkbox: {
     fontSize: 16,
-    color: '#ffd700',
+    color: '#ec4899',
     flexShrink: 0,
     marginTop: 1,
   },
@@ -1678,7 +1678,7 @@ const skillStyles: Record<string, React.CSSProperties> = {
     background: 'rgba(255, 215, 0, 0.2)',
     border: '1px solid #ffd700',
     borderRadius: 4,
-    color: '#ffd700',
+    color: '#ec4899',
     padding: '6px 16px',
     cursor: 'pointer',
     fontFamily: 'monospace',
@@ -1694,9 +1694,9 @@ const skillStyles: Record<string, React.CSSProperties> = {
   comparisonHeader: {
     padding: '10px 14px',
     fontSize: 14,
-    color: '#ffd700',
+    color: '#ec4899',
     fontWeight: 'bold',
-    background: 'rgba(255, 215, 0, 0.1)',
+    background: 'rgba(236, 72, 153, 0.12)',
     borderBottom: '1px solid rgba(255, 215, 0, 0.2)',
   },
   recommendation: {
@@ -1719,7 +1719,7 @@ const skillStyles: Record<string, React.CSSProperties> = {
     gap: 4,
   },
   lowPrice: {
-    color: '#4ade80',
+    color: '#ec4899',
     fontSize: 18,
     fontWeight: 'bold',
   },

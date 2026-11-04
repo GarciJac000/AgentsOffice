@@ -19,7 +19,7 @@ export const ja: Record<string, string> = {
   'agent.noDescription': '説明はまだありません',
 
   // ========== チャットボックス ==========
-  'chat.welcome': 'AgentsOffice へようこそ！\nご要望を入力すると、ディスパッチャーが最適なエージェントに自動で割り当てます。',
+  'chat.welcome': 'PRIM8 Studio へようこそ。\nご要望を入力すると、ディスパッチャーが最適なエージェントに自動で割り当てます。',
   'chat.inputPlaceholder': 'ご要望を入力してください。ディスパッチャーが自動で割り当てます',
   'chat.inputPrivate': '{agent}にメッセージを送る...',
   'chat.send': '送信',
@@ -79,17 +79,29 @@ export const ja: Record<string, string> = {
   'db.error': 'クエリエラー',
 
   // ========== ルーム名 ==========
-  'room.showroom': 'ショールーム',
-  'room.manager': '司令室',
-  'room.meeting': 'コラボルーム',
-  'room.workspace': 'ワークスペース',
-  'room.datacenter': 'データセンター',
+  'room.showroom': 'クリエイティブウォール',
+  'room.manager': 'コントロール',
+  'room.meeting': 'ラウンジ',
+  'room.workspace': 'スタジオフロア',
+  'room.datacenter': 'キッチン / 編集',
 
-  // ========== 組み込みエージェント ==========
+  // ========== 組み込みエージェント (PRIM8 Productions) ==========
   'builtin.dispatcher': 'ディスパッチャー',
   'builtin.dispatcher.role': 'タスク振分・調整',
-  'builtin.assistant': 'アシスタント',
-  'builtin.assistant.role': '汎用ワークアシスタント',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': 'オフィス統括・コーディネーター',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / レパートリー',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': 'クリエイティブ方向・アーティスト開発',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': 'セッション制作・プロジェクト推進',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': '音楽 / オーディオ・プロデューサー',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': 'パフォーマンス・リリース運営',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': 'ミックス / サウンド＆信号系',
   'builtin.data_engineer': 'データエンジニア',
   'builtin.data_engineer.role': 'データ管理・アップロード',
 

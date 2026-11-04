@@ -19,7 +19,7 @@ export const zhCN: Record<string, string> = {
   'agent.noDescription': '暂无描述',
 
   // ========== 聊天框 ==========
-  'chat.welcome': '欢迎来到 AgentsOffice！\n直接输入需求，调度员会自动分配合适的 Agent。',
+  'chat.welcome': '欢迎来到 PRIM8 Studio。\n直接输入需求，调度员会自动分配合适的 Agent。',
   'chat.inputPlaceholder': '输入需求，调度员自动分配',
   'chat.inputPrivate': '和{agent}说点什么...',
   'chat.send': '发送',
@@ -79,17 +79,29 @@ export const zhCN: Record<string, string> = {
   'db.error': '查询错误',
 
   // ========== 房间名称 ==========
-  'room.showroom': '展示厅',
-  'room.manager': '调度中心',
-  'room.meeting': '协作室',
-  'room.workspace': '待命区',
-  'room.datacenter': '数据中心',
+  'room.showroom': '创意墙',
+  'room.manager': '控制室',
+  'room.meeting': '休息区',
+  'room.workspace': '工作室地板',
+  'room.datacenter': '厨房 / 剪辑',
 
-  // ========== 内置 Agent ==========
+  // ========== 内置 Agent (PRIM8 Productions) ==========
   'builtin.dispatcher': '调度员',
   'builtin.dispatcher.role': '任务分配与调度',
-  'builtin.assistant': '助理',
-  'builtin.assistant.role': '通用工作助理',
+  'builtin.jarvis': 'Jarvis',
+  'builtin.jarvis.role': '办公室统筹与协调',
+  'builtin.aria': 'ARIA',
+  'builtin.aria.role': 'A&R / 曲库与创意甄选',
+  'builtin.simone': 'SIMONE',
+  'builtin.simone.role': '创意方向与艺人发展',
+  'builtin.spike': 'SPIKE',
+  'builtin.spike.role': '录音制作与项目推进',
+  'builtin.dre': 'DRE',
+  'builtin.dre.role': '音乐 / 音频制作人',
+  'builtin.shakir': 'SHAKIR',
+  'builtin.shakir.role': '演出与发行运营',
+  'builtin.echo': 'Echo',
+  'builtin.echo.role': '混音 / 声音与信号链',
   'builtin.data_engineer': '数据工程师',
   'builtin.data_engineer.role': '数据管理与上传',
 
