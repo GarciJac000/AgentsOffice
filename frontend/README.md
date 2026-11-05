@@ -1,73 +1,40 @@
-# React + TypeScript + Vite
+# PRIM8 Claymation Office (frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Browser prototype of the PRIM8 Productions studio as a **Sims-style isometric claymation office**, built with React + React Three Fiber + drei.
 
-Currently, two official plugins are available:
+## Features (this prototype)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- One diorama scene with **five handmade rooms** and **five clay puppet agents**
+- Agent states: `idle` · `working` · `blocked` · `done` (speech bubble + matching stop-motion anim)
+- High-angle orbit camera with zoom, pan, and click-to-focus (room or character)
+- Side panel: name, role, status, activity log, stubbed chat
+- Mock data in `src/claymation/mockOffice.ts` with a clean `getMockOffice()` seam for a future backend
 
-## React Compiler
+## Run locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open **http://localhost:5174/static/office/** (Vite `base` is `/static/office/` so the build also serves under the FastAPI static path).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build   # outputs to ../app/static/office
+npm run preview # preview the production build
 ```
+
+## Roster
+
+| Agent  | Role                 | Room             |
+|--------|----------------------|------------------|
+| Aria   | A&R Manager          | Corner Office    |
+| Simone | Catalog Manager      | Catalog Desk     |
+| Spike  | Music Video Director | Screening Room   |
+| Dre    | Music Production     | Recording Studio |
+| Shakir | Promotion Strategy   | War Room         |
+
+## Scope (intentionally out)
+
+No live agent backend, office builder, meetings, or authored GLB models yet — figures are procedural clay shapes with thumbprint displacement.
