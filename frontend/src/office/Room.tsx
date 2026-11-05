@@ -12,12 +12,12 @@ interface RoomProps {
 
 export function Room({ room, selected, onSelect }: RoomProps) {
   const [w, d] = room.size;
-  const wallH = 1.55;
+  // Sims-style open-top: low walls, no ceiling, open toward atrium
+  const wallH = 1.05;
 
   const wallMat = useMemo(() => mats.paint(shade(room.color, 1.18), [1.5, 1]), [room.color]);
   const floorMat = useMemo(() => mats.floor(shade(room.color, 0.55), [2.5, 2.5]), [room.color]);
   const trimMat = useMemo(() => mats.wood('#6b4423', [1, 0.2]), []);
-  const ceilMat = useMemo(() => mats.paint('#3a3f4a', [1, 1]), []);
 
   return (
     <group
@@ -27,67 +27,51 @@ export function Room({ room, selected, onSelect }: RoomProps) {
         onSelect(room.id);
       }}
     >
-      {/* Floor */}
+      {/* Raised floor platform */}
       <mesh position={[0, 0.05, 0]} receiveShadow castShadow material={floorMat}>
         <boxGeometry args={[w, 0.1, d]} />
       </mesh>
-
-      {/* Dark acoustic ceiling — depth without washing bloom */}
-      <mesh position={[0, wallH + 0.18, -0.12]} material={ceilMat} castShadow>
-        <boxGeometry args={[w * 0.92, 0.05, d * 0.62]} />
-      </mesh>
-      {/* Recessed ceiling light strips (emissive, small) */}
-      <mesh position={[-w * 0.22, wallH + 0.14, -0.12]}>
-        <boxGeometry args={[w * 0.28, 0.02, 0.08]} />
-        <meshStandardMaterial
-          color="#f8fafc"
-          emissive="#fef3c7"
-          emissiveIntensity={1.6}
-          roughness={0.3}
-        />
-      </mesh>
-      <mesh position={[w * 0.22, wallH + 0.14, -0.12]}>
-        <boxGeometry args={[w * 0.28, 0.02, 0.08]} />
-        <meshStandardMaterial
-          color="#f8fafc"
-          emissive="#fef3c7"
-          emissiveIntensity={1.6}
-          roughness={0.3}
-        />
+      {/* Soft floor edge bevel */}
+      <mesh position={[0, 0.01, 0]} receiveShadow material={mats.metal('#1e293b')}>
+        <boxGeometry args={[w + 0.12, 0.04, d + 0.12]} />
       </mesh>
 
+      {/* Back wall */}
       <Wall width={w} height={wallH} material={wallMat} position={[0, wallH / 2 + 0.1, -d / 2]} />
+      {/* Left wall (full) */}
       <Wall
-        width={0.1}
+        width={0.12}
         height={wallH}
         depth={d}
         material={wallMat}
         position={[-w / 2, wallH / 2 + 0.1, 0]}
       />
+      {/* Right wall — short return only (doorway open to atrium) */}
       <Wall
-        width={0.1}
+        width={0.12}
         height={wallH}
-        depth={d * 0.4}
+        depth={d * 0.28}
         material={wallMat}
-        position={[w / 2, wallH / 2 + 0.1, -d * 0.28]}
+        position={[w / 2, wallH / 2 + 0.1, -d * 0.36]}
       />
 
-      {/* Baseboard + chair rail */}
+      {/* Baseboard */}
       <mesh position={[0, 0.16, -d / 2 + 0.04]} castShadow material={trimMat}>
-        <boxGeometry args={[w * 0.98, 0.1, 0.05]} />
+        <boxGeometry args={[w * 0.98, 0.08, 0.05]} />
       </mesh>
-      <mesh position={[0, 0.85, -d / 2 + 0.03]} material={trimMat}>
-        <boxGeometry args={[w * 0.96, 0.03, 0.03]} />
+      {/* Doorway threshold toward atrium */}
+      <mesh position={[0, 0.12, d / 2 - 0.02]} material={mats.metal('#64748b')}>
+        <boxGeometry args={[Math.min(w * 0.55, 2.4), 0.04, 0.1]} />
       </mesh>
 
       {selected && (
         <mesh position={[0, 0.12, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[Math.min(w, d) * 0.3, Math.min(w, d) * 0.36, 64]} />
+          <ringGeometry args={[Math.min(w, d) * 0.28, Math.min(w, d) * 0.34, 64]} />
           <meshBasicMaterial color="#ec4899" transparent opacity={0.55} />
         </mesh>
       )}
 
-      <Html position={[0, wallH + 0.5, -d / 2 + 0.12]} center distanceFactor={17}>
+      <Html position={[0, wallH + 0.35, -d / 2 + 0.08]} center distanceFactor={16}>
         <div
           style={{
             color: selected ? '#f9a8d4' : '#dbe3f0',

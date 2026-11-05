@@ -28,8 +28,9 @@ export function OfficeScene({
   onSelectAgent,
   onSelectRoom,
 }: OfficeSceneProps) {
-  const baseMat = useMemo(() => mats.floor('#2c2621', [6, 5]), []);
-  const hallMat = useMemo(() => mats.floor('#3d3530', [2, 2]), []);
+  const baseMat = useMemo(() => mats.floor('#25201c', [7, 6]), []);
+  const hallMat = useMemo(() => mats.floor('#3f3832', [3, 2]), []);
+  const rugMat = useMemo(() => mats.fabric('#1e293b'), []);
   const plinthMat = useMemo(() => mats.metal('#1e293b', [1, 1]), []);
 
   const agentWorldPos = useMemo(() => {
@@ -48,21 +49,21 @@ export function OfficeScene({
 
   return (
     <>
-      <color attach="background" args={['#070b12']} />
-      <fog attach="fog" args={['#070b12', 36, 68]} />
+      <color attach="background" args={['#080c14']} />
+      <fog attach="fog" args={['#080c14', 38, 70]} />
 
       <InitialCamera />
       <CameraRig focusTarget={focusTarget} />
       <SoftShadows size={12} samples={8} focus={0.7} />
 
-      {/* Studio key / fill / rim */}
-      <ambientLight intensity={0.32} color="#dbe4f5" />
-      <hemisphereLight args={['#f1f5f9', '#1a2332', 0.65]} />
+      {/* Brighter keying now that rooms are open-top */}
+      <ambientLight intensity={0.42} color="#e2e8f0" />
+      <hemisphereLight args={['#f8fafc', '#1e293b', 0.7]} />
       <directionalLight
         castShadow
-        position={[14, 22, 11]}
-        intensity={2.6}
-        color="#fff4e6"
+        position={[12, 20, 10]}
+        intensity={2.4}
+        color="#fff7ed"
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.00015}
         shadow-normalBias={0.03}
@@ -72,65 +73,90 @@ export function OfficeScene({
         shadow-camera-top={22}
         shadow-camera-bottom={-22}
       />
-      <directionalLight position={[-10, 12, -8]} intensity={0.7} color="#93c5fd" />
-      <directionalLight position={[0, 8, 14]} intensity={0.35} color="#fda4af" />
-      <pointLight position={[-5.5, 3.8, 4.5]} intensity={0.7} color="#fb7185" distance={14} />
-      <pointLight position={[7.5, 3.5, -4]} intensity={0.55} color="#22d3ee" distance={14} />
-      <spotLight
-        position={[0, 10, 0]}
-        angle={0.55}
-        penumbra={0.6}
-        intensity={0.85}
-        color="#ffffff"
-        castShadow={false}
-      />
+      <directionalLight position={[-9, 14, -6]} intensity={0.75} color="#93c5fd" />
+      <directionalLight position={[0, 10, 12]} intensity={0.4} color="#fda4af" />
+      <pointLight position={[-4.5, 3.2, 3.5]} intensity={0.55} color="#fb7185" distance={12} />
+      <pointLight position={[5.5, 3.2, -3]} intensity={0.45} color="#22d3ee" distance={12} />
 
-      <Environment preset="apartment" environmentIntensity={0.4} />
+      <Environment preset="apartment" environmentIntensity={0.45} />
 
-      <mesh position={[0, -0.1, 0]} receiveShadow castShadow material={baseMat}>
-        <boxGeometry args={[24, 0.3, 20]} />
-      </mesh>
-      <mesh position={[0, 0.08, 0]} receiveShadow material={hallMat}>
-        <boxGeometry args={[6.8, 0.06, 4.8]} />
+      {/* Building slab */}
+      <mesh position={[0, -0.12, 0]} receiveShadow castShadow material={baseMat}>
+        <boxGeometry args={[22, 0.28, 16]} />
       </mesh>
 
-      {/* Hallway edge inlays */}
-      <mesh position={[0, 0.12, 2.35]} material={mats.metal('#475569')}>
-        <boxGeometry args={[6.8, 0.02, 0.06]} />
+      {/* Cross atrium / corridors tying the five rooms together */}
+      <mesh position={[0, 0.06, 0]} receiveShadow material={hallMat}>
+        <boxGeometry args={[7.2, 0.05, 3.2]} />
       </mesh>
-      <mesh position={[0, 0.12, -2.35]} material={mats.metal('#475569')}>
-        <boxGeometry args={[6.8, 0.02, 0.06]} />
+      <mesh position={[0, 0.06, 0]} receiveShadow material={hallMat}>
+        <boxGeometry args={[3.2, 0.05, 9.6]} />
       </mesh>
+      {/* Accent rug under lobby */}
+      <mesh position={[0, 0.09, 0]} receiveShadow material={rugMat}>
+        <boxGeometry args={[3.6, 0.02, 2.4]} />
+      </mesh>
+      {/* Corridor edge rails */}
+      {[
+        [0, 0.1, 1.55, 7.2, 0.02, 0.05],
+        [0, 0.1, -1.55, 7.2, 0.02, 0.05],
+        [1.55, 0.1, 0, 0.05, 0.02, 9.6],
+        [-1.55, 0.1, 0, 0.05, 0.02, 9.6],
+      ].map((v, i) => (
+        <mesh
+          key={i}
+          position={[v[0], v[1], v[2]]}
+          material={mats.metal('#475569')}
+        >
+          <boxGeometry args={[v[3], v[4], v[5]]} />
+        </mesh>
+      ))}
 
       <ContactShadows
-        position={[0, 0.11, 0]}
-        opacity={0.65}
-        scale={30}
-        blur={2.2}
-        far={10}
+        position={[0, 0.09, 0]}
+        opacity={0.55}
+        scale={28}
+        blur={2.0}
+        far={9}
         resolution={2048}
         color="#000000"
       />
 
-      {/* PRIM8 brand plinth */}
-      <group position={[0, 0.12, 0]}>
-        <mesh position={[0, 0.3, 0]} castShadow material={plinthMat}>
-          <boxGeometry args={[1.45, 0.6, 0.48]} />
+      {/* PRIM8 brand plinth in atrium center */}
+      <group position={[0, 0.1, 0]}>
+        <mesh position={[0, 0.28, 0]} castShadow material={plinthMat}>
+          <boxGeometry args={[1.35, 0.55, 0.45]} />
         </mesh>
         <mesh position={[0, 0.02, 0]} material={mats.metal('#0f172a')}>
-          <boxGeometry args={[1.55, 0.04, 0.58]} />
+          <boxGeometry args={[1.45, 0.04, 0.55]} />
         </mesh>
-        <mesh position={[0, 0.64, 0.02]}>
-          <boxGeometry args={[1.15, 0.24, 0.05]} />
+        <mesh position={[0, 0.58, 0.02]}>
+          <boxGeometry args={[1.05, 0.2, 0.05]} />
           <meshStandardMaterial
             color="#ec4899"
             emissive="#ec4899"
-            emissiveIntensity={1.1}
+            emissiveIntensity={1.15}
             roughness={0.3}
             metalness={0.35}
           />
         </mesh>
-        <pointLight position={[0, 0.9, 0.4]} intensity={0.45} color="#ec4899" distance={5} />
+        <pointLight position={[0, 0.85, 0.35]} intensity={0.5} color="#ec4899" distance={5} />
+      </group>
+
+      {/* Lounge bench + plant for atrium life */}
+      <mesh position={[-2.2, 0.28, 0]} castShadow material={mats.fabric('#334155')}>
+        <boxGeometry args={[1.1, 0.35, 0.45]} />
+      </mesh>
+      <mesh position={[2.2, 0.28, 0]} castShadow material={mats.fabric('#334155')}>
+        <boxGeometry args={[1.1, 0.35, 0.45]} />
+      </mesh>
+      <group position={[0, 0.1, 1.35]}>
+        <mesh position={[0, 0.18, 0]} castShadow material={mats.plastic('#57534e')}>
+          <cylinderGeometry args={[0.16, 0.18, 0.32, 16]} />
+        </mesh>
+        <mesh position={[0, 0.5, 0]} castShadow material={mats.fabric('#166534')}>
+          <sphereGeometry args={[0.28, 16, 12]} />
+        </mesh>
       </group>
 
       {office.rooms.map((room) => (
@@ -156,14 +182,14 @@ export function OfficeScene({
       })}
 
       <EffectComposer multisampling={4}>
-        <N8AO aoRadius={0.4} intensity={0.95} distanceFalloff={0.7} quality="medium" />
+        <N8AO aoRadius={0.35} intensity={0.85} distanceFalloff={0.75} quality="medium" />
         <Bloom
-          luminanceThreshold={0.9}
+          luminanceThreshold={0.92}
           luminanceSmoothing={0.25}
-          intensity={0.9}
+          intensity={0.85}
           mipmapBlur
         />
-        <Vignette offset={0.3} darkness={0.35} />
+        <Vignette offset={0.32} darkness={0.3} />
       </EffectComposer>
     </>
   );
