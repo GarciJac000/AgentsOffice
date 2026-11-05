@@ -1,32 +1,45 @@
 import * as THREE from 'three';
 import { ROOM_SIZE } from './rooms';
+import {
+  buildCinematicWorkspace,
+  type Collider,
+} from './buildCinematicWorkspace';
+import {
+  CINEMATIC,
+  makeCharcoalStoneTexture,
+  makeWallPlasterTexture,
+  makeWalnutTexture,
+  matBronze,
+} from './cinematicMaterials';
+
+export type { Collider };
 
 const COLORS = {
-  woodDark: 0xa8885c,
-  woodLight: 0xd4b896,
-  wall: 0xf0ece4,
-  wallWarm: 0xe8e2d6,
-  wallTrim: 0xddd6c8,
-  baseboard: 0xd4cdc0,
-  desk: 0xf7f5f0,
-  deskEdge: 0xe5e0d6,
-  chair: 0x4b5563,
-  chairSeat: 0x374151,
-  sofa: 0x1a3352,
-  sofaCushion: 0x243f63,
+  woodDark: CINEMATIC.walnut,
+  woodLight: CINEMATIC.walnutLight,
+  wall: CINEMATIC.charcoalLight,
+  wallWarm: CINEMATIC.charcoal,
+  wallTrim: CINEMATIC.stoneLight,
+  baseboard: CINEMATIC.bronze,
+  desk: CINEMATIC.walnutLight,
+  deskEdge: CINEMATIC.walnut,
+  chair: 0x2a2a2e,
+  chairSeat: CINEMATIC.leather,
+  sofa: 0x141618,
+  sofaCushion: 0x1c1f24,
   plant: 0x3d9b5f,
   plantDark: 0x2d7a4a,
   plantLight: 0x5cbf7a,
-  pot: 0xf1f5f9,
-  potTerracotta: 0xc4785a,
-  metal: 0xcbd5e1,
-  metalDark: 0x94a3b8,
-  screen: 0x0b0c0e,
-  pink: 0xec4899,
-  fridge: 0xf8fafc,
-  counter: 0xffffff,
-  beam: 0xb8956a,
-  column: 0xe8e4dc,
+  pot: 0x3a3a40,
+  potTerracotta: 0x8a5a3c,
+  metal: CINEMATIC.bronzeBright,
+  metalDark: CINEMATIC.bronze,
+  screen: CINEMATIC.screen,
+  pink: CINEMATIC.pink,
+  fridge: 0x2a2d33,
+  counter: 0x2f3238,
+  beam: CINEMATIC.walnut,
+  column: CINEMATIC.stone,
 };
 
 function mat(color: number, opts: THREE.MeshStandardMaterialParameters = {}) {
@@ -204,57 +217,8 @@ function makePrim8ScreenTexture(): THREE.CanvasTexture {
 }
 
 function makeWoodFloorTexture(): THREE.CanvasTexture {
-  const c = document.createElement('canvas');
-  c.width = 512;
-  c.height = 512;
-  const ctx = c.getContext('2d')!;
-  ctx.fillStyle = '#b8956a';
-  ctx.fillRect(0, 0, 512, 512);
-
-  const plankH = 36;
-  const tones = ['#d2b48c', '#c4a574', '#b8956a', '#a8885c', '#cbb07e'];
-  for (let row = 0; row < Math.ceil(512 / plankH); row++) {
-    const y = row * plankH;
-    ctx.fillStyle = tones[row % tones.length];
-    ctx.fillRect(0, y, 512, plankH);
-
-    // Stronger grain lines
-    for (let g = 0; g < 7; g++) {
-      const gy = y + 3 + g * 5 + ((row * 3 + g) % 3);
-      ctx.strokeStyle = `rgba(90,55,25,${0.14 + (g % 3) * 0.05})`;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(0, gy);
-      for (let x = 0; x < 512; x += 24) {
-        ctx.lineTo(x + 12, gy + ((x + row * 7) % 5) - 2);
-      }
-      ctx.stroke();
-    }
-
-    // Dark plank seam
-    ctx.strokeStyle = 'rgba(70,45,20,0.55)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, y + plankH - 1);
-    ctx.lineTo(512, y + plankH - 1);
-    ctx.stroke();
-
-    const offset = (row % 3) * 95;
-    for (let j = offset; j < 512; j += 160) {
-      ctx.strokeStyle = 'rgba(70,45,20,0.4)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(j, y);
-      ctx.lineTo(j, y + plankH);
-      ctx.stroke();
-    }
-  }
-
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 4;
-  return tex;
+  // Dark walnut planks for cinematic HQ shell
+  return makeWalnutTexture();
 }
 
 function makeRugTexture(base: string, accent: string, style: 'rect' | 'round' = 'rect'): THREE.CanvasTexture {
@@ -295,22 +259,7 @@ function makeRugTexture(base: string, accent: string, style: 'rect' | 'round' = 
 }
 
 function makeWallPaintTexture(): THREE.CanvasTexture {
-  const c = document.createElement('canvas');
-  c.width = 128;
-  c.height = 128;
-  const ctx = c.getContext('2d')!;
-  ctx.fillStyle = '#f0ece4';
-  ctx.fillRect(0, 0, 128, 128);
-  for (let i = 0; i < 80; i++) {
-    const x = (i * 47) % 128;
-    const y = (i * 31) % 128;
-    ctx.fillStyle = `rgba(200,190,170,${0.04 + (i % 5) * 0.01})`;
-    ctx.fillRect(x, y, 6 + (i % 4), 4 + (i % 3));
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
+  return makeWallPlasterTexture();
 }
 
 function addPlant(parent: THREE.Group, x: number, z: number, scale = 1, terracotta = false) {
@@ -674,46 +623,59 @@ function addRecessedLight(parent: THREE.Group, x: number, y: number, z: number) 
   );
 }
 
-/** Build the full PRIM8 Gather-style isometric office into `scene`. */
-export function buildOffice(scene: THREE.Scene): THREE.Group {
+/** Build the PRIM8 HQ. Studio Floor is the cinematic showcase room. */
+export function buildOffice(scene: THREE.Scene): { root: THREE.Group; colliders: Collider[] } {
   const root = new THREE.Group();
   root.name = 'office-root';
+  const colliders: Collider[] = [];
 
   const { width: W, depth: D, height: H } = ROOM_SIZE;
   const hw = W / 2;
   const hd = D / 2;
 
-  // Floor — wood with grain
+  // Floor — dark walnut with charcoal stone elsewhere via zone rugs
   const floorTex = makeWoodFloorTexture();
   floorTex.repeat.set(W / 2.2, D / 2.2);
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(W, D),
-    new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.88, metalness: 0.02 }),
+    new THREE.MeshStandardMaterial({
+      map: floorTex,
+      roughness: 0.52,
+      metalness: 0.08,
+      envMapIntensity: 0.6,
+    }),
   );
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   root.add(floor);
 
-  // Zone rugs — distinct from wood so zones read without text alone
-  addZoneRug(root, 5.0, 4.0, 0, 0.7, '#efe8dc', '#ec4899'); // Studio Floor
-  addZoneRug(root, 4.6, 2.4, 0, -5.0, '#e2e8f0', '#64748b'); // Control
-  addZoneRug(root, 3.2, 3.2, 5.5, -4.2, '#d4c4a8', '#ec4899', true); // Lounge
-  addZoneRug(root, 3.8, 3.2, 5.4, 4.4, '#f1f5f9', '#38bdf8'); // Kitchen
-  addZoneRug(root, 2.4, 7.5, -6.2, 0, '#ecfdf5', '#4ade80'); // Creative Wall runner
+  // Surrounding zone rugs (Studio Floor uses cinematic stone platform instead)
+  addZoneRug(root, 4.6, 2.4, 0, -5.0, '#2a2d33', '#8a6a45'); // Control
+  addZoneRug(root, 3.2, 3.2, 5.5, -4.2, '#1c1e22', '#ec4899', true); // Lounge
+  addZoneRug(root, 3.8, 3.2, 5.4, 4.4, '#252830', '#8a6a45'); // Kitchen
+  addZoneRug(root, 2.4, 7.5, -6.2, 0, '#1a1c20', '#ec4899'); // Creative Wall runner
 
-  // Floating platform underside
-  root.add(box(W + 0.5, 0.38, D + 0.5, 0xcfc7b8, 0, -0.2, 0));
-  root.add(box(W + 0.2, 0.08, D + 0.2, 0xece7dc, 0, 0.005, 0));
+  // Floating platform underside (charcoal)
+  root.add(box(W + 0.5, 0.38, D + 0.5, 0x12141a, 0, -0.2, 0));
+  root.add(box(W + 0.2, 0.08, D + 0.2, CINEMATIC.stone, 0, 0.005, 0));
 
-  // Walls with subtle paint variation
+  // Charcoal plaster walls
   const wallTex = makeWallPaintTexture();
   wallTex.repeat.set(4, 2);
   const wallMat = new THREE.MeshStandardMaterial({
     map: wallTex,
     color: COLORS.wall,
-    roughness: 0.94,
-    metalness: 0.02,
+    roughness: 0.88,
+    metalness: 0.06,
+    envMapIntensity: 0.35,
   });
+
+  // Outer wall colliders for FPS
+  colliders.push(
+    { minX: -hw - 0.5, maxX: -hw + 0.25, minZ: -hd, maxZ: hd },
+    { minX: hw - 0.25, maxX: hw + 0.5, minZ: -hd, maxZ: hd },
+    { minX: -hw, maxX: hw, minZ: -hd - 0.5, maxZ: -hd + 0.25 },
+  );
 
   const backWall = new THREE.Mesh(new THREE.BoxGeometry(W, H, 0.18), wallMat);
   backWall.position.set(0, H / 2, -hd);
@@ -760,7 +722,8 @@ export function buildOffice(scene: THREE.Scene): THREE.Group {
   rightSky.rotation.y = -Math.PI / 2;
   root.add(rightSky);
 
-  // Window frames + glass
+  // Bronze window frames + smoked glass
+  const bronzeMat = matBronze();
   const windowPositions: Array<[number, number, number, number, number, number]> = [
     [-5.2, 2.35, -hd + 0.12, 2.6, 2.0, 0.05],
     [4.8, 2.35, -hd + 0.12, 2.8, 2.0, 0.05],
@@ -768,25 +731,20 @@ export function buildOffice(scene: THREE.Scene): THREE.Group {
     [hw - 0.12, 2.35, 3.0, 0.05, 2.0, 2.6],
   ];
   for (const [x, y, z, w, h, d] of windowPositions) {
-    root.add(box(w + 0.16, h + 0.16, d + 0.06, 0xffffff, x, y, z));
-    if (w > d) {
-      root.add(box(0.05, h, d + 0.02, 0xffffff, x, y, z));
-      root.add(box(w, 0.05, d + 0.02, 0xffffff, x, y, z));
-    } else {
-      root.add(box(0.05, h, d, 0xffffff, x, y, z));
-      root.add(box(w + 0.02, 0.05, d, 0xffffff, x, y, z));
-    }
-    // Slightly emissive glass so bay reads bright even in soft light
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.16, h + 0.16, d + 0.06), bronzeMat);
+    frame.position.set(x, y, z);
+    frame.castShadow = true;
+    root.add(frame);
     const glass = new THREE.Mesh(
       new THREE.BoxGeometry(w, h, d),
       new THREE.MeshStandardMaterial({
         map: sky,
-        roughness: 0.2,
-        metalness: 0.05,
-        emissive: 0x88aacc,
-        emissiveIntensity: 0.15,
+        color: 0x1a1c20,
+        roughness: 0.12,
+        metalness: 0.25,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.55,
+        envMapIntensity: 0.8,
       }),
     );
     glass.position.set(x, y, z);
@@ -883,31 +841,25 @@ export function buildOffice(scene: THREE.Scene): THREE.Group {
     addPlant(root, px, pz, s, terra);
   }
 
-  // Back desks (Control) — keep aligned with DESK_SPOTS
+  // Back desks (Control) — keep aligned with DESK_SPOTS (unchanged layout)
   addDesk(root, -2.2, -5.2);
   addChair(root, -2.2, -4.3, Math.PI);
   addDesk(root, 2.2, -5.2);
   addChair(root, 2.2, -4.3, Math.PI);
+  colliders.push(
+    { minX: -3.0, maxX: -1.4, minZ: -5.6, maxZ: -4.8 },
+    { minX: 1.4, maxX: 3.0, minZ: -5.6, maxZ: -4.8 },
+  );
 
-  // Center 2x2 studio desks
-  const desks: Array<[number, number]> = [
-    [-1.6, -0.2],
-    [1.6, -0.2],
-    [-1.6, 2.0],
-    [1.6, 2.0],
-  ];
-  for (const [dx, dz] of desks) {
-    addDesk(root, dx, dz);
-    addChair(root, dx, dz + 0.85, Math.PI);
-  }
+  // ★ Studio Floor — cinematic showcase room (replaces primitive center desks)
+  colliders.push(...buildCinematicWorkspace(root));
 
-  // Lounge
+  // Lounge / kitchen retained as surrounding zones (palette-matched, not rebuilt)
   addSofa(root, 5.5, -5.1);
   addCoffeeTable(root, 5.5, -3.9);
-  // Side chair in lounge
   addChair(root, 7.0, -4.0, -Math.PI / 2);
+  colliders.push({ minX: 4.2, maxX: 6.8, minZ: -5.6, maxZ: -4.5 });
 
-  // Kitchen / edit
   addFridge(root, 7.2, 4.2);
   addCounter(root, 5.2, 3.2);
   addDiningTable(root, 5.2, 5.2);
@@ -915,6 +867,21 @@ export function buildOffice(scene: THREE.Scene): THREE.Group {
   addChair(root, 5.2, 4.5, 0);
   addChair(root, 6.0, 4.5, -0.3);
   addVending(root, 7.3, 2.5);
+  colliders.push(
+    { minX: 4.2, maxX: 6.2, minZ: 4.7, maxZ: 5.7 },
+    { minX: 6.8, maxX: 7.6, minZ: 3.8, maxZ: 4.6 },
+  );
+
+  // Stone accent strip near creative wall (charcoal stone texture sample)
+  const stoneTex = makeCharcoalStoneTexture();
+  stoneTex.repeat.set(2, 6);
+  const stoneStrip = new THREE.Mesh(
+    new THREE.BoxGeometry(0.9, 0.03, 6),
+    new THREE.MeshStandardMaterial({ map: stoneTex, roughness: 0.8, metalness: 0.1 }),
+  );
+  stoneStrip.position.set(-5.8, 0.02, 0);
+  stoneStrip.receiveShadow = true;
+  root.add(stoneStrip);
 
   // Floor LED accent strips along main axis
   root.add(
@@ -947,5 +914,5 @@ export function buildOffice(scene: THREE.Scene): THREE.Group {
   }
 
   scene.add(root);
-  return root;
+  return { root, colliders };
 }

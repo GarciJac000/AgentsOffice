@@ -16,7 +16,13 @@ Default AgentsOffice roster + visual theme for Jacob’s PRIM8 Productions studi
 
 ## Visual design
 
-The office is a **full 3D isometric Three.js scene** (orthographic camera, soft studio lighting, zone rugs, neon PRIM8 video wall) inspired by the Skydive / Gather open floor plan:
+The office is a **Three.js** interactive HQ. **Studio Floor (`workspace`)** is the cinematic showcase room (dark walnut / charcoal stone / smoked glass / bronze, PBR materials, architectural lighting). Surrounding zones keep the open-plan layout with a matched dark palette.
+
+**Cameras:** overhead orthographic (default) + first-person walkthrough (`V` or HUD button). Desktop: WASD + pointer lock. Touch: left stick move / right stick look.
+
+**Quality:** progressive presets (`frontend/src/three/quality.ts`) — shadow map size, DPR, FXAA, env intensity.
+
+Inspired by the Skydive / Gather open floor plan:
 
 | Zone | Room id | Notes |
 |------|---------|-------|
