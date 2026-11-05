@@ -76,7 +76,7 @@ export const MOCK_OFFICE: OfficeMock = {
       name: 'Corner Office',
       position: [-7.2, 0, -5.2],
       size: [5.4, 5.2],
-      color: '#d4a574',
+      color: '#d6c4b0',
       description: 'A&R corner overlooking the studio floor',
     },
     {
@@ -84,7 +84,7 @@ export const MOCK_OFFICE: OfficeMock = {
       name: 'Catalog Desk',
       position: [0, 0, -5.4],
       size: [5.6, 4.8],
-      color: '#c4a882',
+      color: '#c9b8a4',
       description: 'Shelves of songs, masters, and rights binders',
     },
     {
@@ -92,7 +92,7 @@ export const MOCK_OFFICE: OfficeMock = {
       name: 'Screening Room',
       position: [7.4, 0, -5.0],
       size: [5.6, 5.4],
-      color: '#b8956e',
+      color: '#b7a894',
       description: 'Storyboard wall + large playback monitor',
     },
     {
@@ -100,7 +100,7 @@ export const MOCK_OFFICE: OfficeMock = {
       name: 'Recording Studio',
       position: [-5.6, 0, 4.8],
       size: [6.4, 5.6],
-      color: '#c9a078',
+      color: '#c4b09a',
       description: 'Mixing board, booth glass, warm foam walls',
     },
     {
@@ -108,7 +108,7 @@ export const MOCK_OFFICE: OfficeMock = {
       name: 'War Room',
       position: [5.8, 0, 4.8],
       size: [6.2, 5.6],
-      color: '#c2a07a',
+      color: '#bdaa96',
       description: 'Whiteboard + social numbers screen',
     },
   ],

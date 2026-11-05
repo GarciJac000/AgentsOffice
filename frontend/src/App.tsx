@@ -1,12 +1,13 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OfficeScene } from './claymation/OfficeScene';
-import { AgentPanel } from './claymation/AgentPanel';
+import * as THREE from 'three';
+import { OfficeScene } from './office/OfficeScene';
+import { AgentPanel } from './office/AgentPanel';
 import {
   getMockOffice,
   type OfficeMock,
   STATUS_META,
-} from './claymation/mockOffice';
+} from './office/mockOffice';
 
 export default function App() {
   const [office, setOffice] = useState<OfficeMock | null>(null);
@@ -57,7 +58,7 @@ export default function App() {
   );
 
   if (!office) {
-    return <div className="boot">Loading PRIM8 claymation office…</div>;
+    return <div className="boot">Loading PRIM8 studio…</div>;
   }
 
   return (
@@ -66,7 +67,7 @@ export default function App() {
         <div className="top-bar__brand">
           <span className="top-bar__mark">PRIM</span>
           <span className="top-bar__eight">8</span>
-          <span className="top-bar__sub">Claymation Office</span>
+          <span className="top-bar__sub">Studio Office</span>
         </div>
         <div className="top-bar__roster">
           {office.agents.map((a) => {
@@ -91,9 +92,14 @@ export default function App() {
       <div className="stage">
         <Canvas
           shadows
-          dpr={[1, 1.75]}
-          camera={{ position: [16, 14, 16], fov: 42, near: 0.1, far: 120 }}
-          gl={{ antialias: true }}
+          dpr={[1, 2]}
+          camera={{ position: [16, 14, 16], fov: 40, near: 0.1, far: 120 }}
+          gl={{
+            antialias: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.15,
+            outputColorSpace: THREE.SRGBColorSpace,
+          }}
           onPointerMissed={() => {
             setSelectedAgentId(null);
             setSelectedRoomId(null);
