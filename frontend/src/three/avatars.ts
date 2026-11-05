@@ -30,7 +30,7 @@ const LOOK_MODEL: Record<AvatarLook, string> = {
 };
 
 /** Target on-floor height so claymation figures read next to ~0.72 desks. */
-const TARGET_HEIGHT = 2.35;
+const TARGET_HEIGHT = 2.55;
 
 export interface AvatarParts {
   root: THREE.Group;
