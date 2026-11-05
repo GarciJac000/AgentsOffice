@@ -4,7 +4,7 @@ import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { AgentDef, AgentStatus } from './mockOffice';
 import { STATUS_META } from './mockOffice';
-import { mats } from './materials';
+import { mats, surface } from './materials';
 
 interface AgentProps {
   agent: AgentDef;
@@ -13,7 +13,10 @@ interface AgentProps {
   onSelect: (id: string) => void;
 }
 
-/** Stylized but smooth game-character figure (capsule body, PBR materials). */
+/**
+ * Stylized game character — readable at isometric distance with layered
+ * clothing, better proportions, hair mass, and shoe detail.
+ */
 export function Agent({ agent, position, selected, onSelect }: AgentProps) {
   const root = useRef<THREE.Group>(null);
   const torso = useRef<THREE.Group>(null);
@@ -23,26 +26,30 @@ export function Agent({ agent, position, selected, onSelect }: AgentProps) {
 
   const materials = useMemo(
     () => ({
+      // Solid PBR colors (no albedo maps) so outfits stay saturated at iso distance
       skin: mats.skin(agent.skin),
       hair: mats.hair(agent.hair),
-      outfit: mats.fabric(agent.outfit),
-      shoe: mats.plastic('#1a1a1a'),
+      shirt: solidCloth(shade(agent.outfit, 1.25)),
+      jacket: solidCloth(agent.outfit),
+      pants: solidCloth(shade(agent.outfit, 0.45)),
+      shoe: mats.plastic('#0a0a0a'),
+      sole: mats.plastic('#1f1f1f'),
+      accent: mats.plastic(agent.accent),
     }),
-    [agent.skin, agent.hair, agent.outfit],
+    [agent.skin, agent.hair, agent.outfit, agent.accent],
   );
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     const g = root.current;
     if (!g) return;
-    const baseY = selected ? 0.04 : 0;
     animateStatus(agent.status, t, {
       root: g,
       torso: torso.current,
       leftArm: leftArm.current,
       rightArm: rightArm.current,
       head: head.current,
-      baseY,
+      baseY: selected ? 0.03 : 0,
     });
   });
 
@@ -51,6 +58,7 @@ export function Agent({ agent, position, selected, onSelect }: AgentProps) {
   return (
     <group
       position={position}
+      scale={1.12}
       ref={root}
       onClick={(e) => {
         e.stopPropagation();
@@ -63,107 +71,166 @@ export function Agent({ agent, position, selected, onSelect }: AgentProps) {
         document.body.style.cursor = 'auto';
       }}
     >
-      <group ref={torso} position={[0, 0.58, 0]}>
-        <mesh castShadow receiveShadow material={materials.outfit}>
-          <capsuleGeometry args={[0.26, 0.52, 8, 16]} />
+      {/* Legs + pants */}
+      <mesh position={[-0.12, 0.38, 0]} castShadow material={materials.pants}>
+        <capsuleGeometry args={[0.085, 0.42, 8, 16]} />
+      </mesh>
+      <mesh position={[0.12, 0.38, 0]} castShadow material={materials.pants}>
+        <capsuleGeometry args={[0.085, 0.42, 8, 16]} />
+      </mesh>
+
+      {/* Shoes */}
+      <group position={[-0.12, 0.06, 0.04]}>
+        <mesh castShadow material={materials.shoe}>
+          <boxGeometry args={[0.15, 0.08, 0.28]} />
         </mesh>
-        <mesh position={[0, 0.36, 0.02]} castShadow material={materials.outfit}>
-          <sphereGeometry args={[0.18, 16, 12]} />
+        <mesh position={[0, -0.04, 0.02]} material={materials.sole}>
+          <boxGeometry args={[0.16, 0.03, 0.3]} />
+        </mesh>
+      </group>
+      <group position={[0.12, 0.06, 0.04]}>
+        <mesh castShadow material={materials.shoe}>
+          <boxGeometry args={[0.15, 0.08, 0.28]} />
+        </mesh>
+        <mesh position={[0, -0.04, 0.02]} material={materials.sole}>
+          <boxGeometry args={[0.16, 0.03, 0.3]} />
         </mesh>
       </group>
 
-      <group ref={head} position={[0, 1.26, 0]}>
+      {/* Hip / belt */}
+      <mesh position={[0, 0.62, 0]} castShadow material={materials.pants}>
+        <cylinderGeometry args={[0.22, 0.24, 0.14, 20]} />
+      </mesh>
+      <mesh position={[0, 0.68, 0.0]} material={materials.accent}>
+        <torusGeometry args={[0.23, 0.018, 8, 24]} />
+      </mesh>
+
+      <group ref={torso} position={[0, 0.95, 0]}>
+        {/* Undershirt */}
+        <mesh castShadow material={materials.shirt}>
+          <capsuleGeometry args={[0.22, 0.38, 8, 20]} />
+        </mesh>
+        {/* Jacket / outer layer — slightly larger, open at collar */}
+        <mesh position={[0, 0.02, 0]} castShadow material={materials.jacket} scale={[1.08, 1.02, 1.1]}>
+          <capsuleGeometry args={[0.22, 0.34, 8, 20]} />
+        </mesh>
+        {/* Lapel folds */}
+        <mesh position={[-0.12, 0.12, 0.18]} rotation={[0.2, 0.4, 0.15]} material={materials.jacket}>
+          <boxGeometry args={[0.1, 0.28, 0.03]} />
+        </mesh>
+        <mesh position={[0.12, 0.12, 0.18]} rotation={[0.2, -0.4, -0.15]} material={materials.jacket}>
+          <boxGeometry args={[0.1, 0.28, 0.03]} />
+        </mesh>
+        {/* Collar */}
+        <mesh position={[0, 0.32, 0.05]} castShadow material={materials.shirt}>
+          <torusGeometry args={[0.12, 0.035, 8, 16, Math.PI]} />
+        </mesh>
+      </group>
+
+      {/* Neck */}
+      <mesh position={[0, 1.28, 0]} castShadow material={materials.skin}>
+        <cylinderGeometry args={[0.07, 0.08, 0.12, 16]} />
+      </mesh>
+
+      <group ref={head} position={[0, 1.48, 0]}>
         <mesh castShadow material={materials.skin}>
-          <sphereGeometry args={[0.24, 24, 18]} />
+          <sphereGeometry args={[0.2, 32, 24]} />
         </mesh>
-        <mesh
-          position={[0, 0.1, -0.02]}
-          scale={[1.02, 0.65, 1.05]}
-          castShadow
-          material={materials.hair}
-        >
-          <sphereGeometry args={[0.26, 20, 14]} />
+        {/* Ears */}
+        <mesh position={[-0.19, 0, 0]} castShadow material={materials.skin}>
+          <sphereGeometry args={[0.045, 12, 10]} />
         </mesh>
-        <mesh position={[-0.08, 0.02, 0.2]}>
-          <sphereGeometry args={[0.032, 12, 12]} />
-          <meshStandardMaterial color="#0f172a" roughness={0.35} metalness={0.1} />
+        <mesh position={[0.19, 0, 0]} castShadow material={materials.skin}>
+          <sphereGeometry args={[0.045, 12, 10]} />
         </mesh>
-        <mesh position={[0.08, 0.02, 0.2]}>
-          <sphereGeometry args={[0.032, 12, 12]} />
-          <meshStandardMaterial color="#0f172a" roughness={0.35} metalness={0.1} />
+        {/* Hair mass + fringe */}
+        <mesh position={[0, 0.08, -0.02]} scale={[1.05, 0.72, 1.08]} castShadow material={materials.hair}>
+          <sphereGeometry args={[0.21, 24, 16]} />
         </mesh>
-        <mesh position={[-0.08, 0.03, 0.225]}>
-          <sphereGeometry args={[0.012, 8, 8]} />
-          <meshStandardMaterial color="#e2e8f0" roughness={0.2} />
+        <mesh position={[0, 0.12, 0.12]} scale={[0.9, 0.35, 0.45]} material={materials.hair}>
+          <sphereGeometry args={[0.16, 16, 12]} />
         </mesh>
-        <mesh position={[0.08, 0.03, 0.225]}>
-          <sphereGeometry args={[0.012, 8, 8]} />
-          <meshStandardMaterial color="#e2e8f0" roughness={0.2} />
+        <mesh position={[-0.12, 0.05, -0.12]} scale={[0.45, 0.55, 0.4]} material={materials.hair}>
+          <sphereGeometry args={[0.14, 12, 10]} />
+        </mesh>
+        <mesh position={[0.12, 0.05, -0.12]} scale={[0.45, 0.55, 0.4]} material={materials.hair}>
+          <sphereGeometry args={[0.14, 12, 10]} />
+        </mesh>
+        {/* Eyes */}
+        <mesh position={[-0.07, 0.02, 0.17]}>
+          <sphereGeometry args={[0.028, 12, 12]} />
+          <meshStandardMaterial color="#0f172a" roughness={0.25} metalness={0.15} />
+        </mesh>
+        <mesh position={[0.07, 0.02, 0.17]}>
+          <sphereGeometry args={[0.028, 12, 12]} />
+          <meshStandardMaterial color="#0f172a" roughness={0.25} metalness={0.15} />
+        </mesh>
+        <mesh position={[-0.065, 0.028, 0.19]}>
+          <sphereGeometry args={[0.01, 8, 8]} />
+          <meshStandardMaterial color="#f8fafc" roughness={0.15} />
+        </mesh>
+        <mesh position={[0.075, 0.028, 0.19]}>
+          <sphereGeometry args={[0.01, 8, 8]} />
+          <meshStandardMaterial color="#f8fafc" roughness={0.15} />
         </mesh>
       </group>
 
-      <group ref={leftArm} position={[-0.36, 0.9, 0]}>
-        <mesh position={[0, -0.22, 0]} castShadow material={materials.skin}>
-          <capsuleGeometry args={[0.075, 0.34, 6, 12]} />
+      {/* Arms */}
+      <group ref={leftArm} position={[-0.34, 1.12, 0]}>
+        <mesh position={[0, -0.2, 0]} castShadow material={materials.jacket}>
+          <capsuleGeometry args={[0.07, 0.28, 6, 14]} />
+        </mesh>
+        <mesh position={[0, -0.42, 0]} castShadow material={materials.skin}>
+          <sphereGeometry args={[0.065, 14, 12]} />
         </mesh>
       </group>
-      <group ref={rightArm} position={[0.36, 0.9, 0]}>
-        <mesh position={[0, -0.22, 0]} castShadow material={materials.skin}>
-          <capsuleGeometry args={[0.075, 0.34, 6, 12]} />
+      <group ref={rightArm} position={[0.34, 1.12, 0]}>
+        <mesh position={[0, -0.2, 0]} castShadow material={materials.jacket}>
+          <capsuleGeometry args={[0.07, 0.28, 6, 14]} />
+        </mesh>
+        <mesh position={[0, -0.42, 0]} castShadow material={materials.skin}>
+          <sphereGeometry args={[0.065, 14, 12]} />
         </mesh>
       </group>
 
-      <mesh position={[-0.13, 0.24, 0]} castShadow material={materials.outfit}>
-        <capsuleGeometry args={[0.09, 0.3, 6, 12]} />
-      </mesh>
-      <mesh position={[0.13, 0.24, 0]} castShadow material={materials.outfit}>
-        <capsuleGeometry args={[0.09, 0.3, 6, 12]} />
-      </mesh>
-      <mesh position={[-0.13, 0.05, 0.04]} castShadow material={materials.shoe}>
-        <boxGeometry args={[0.16, 0.08, 0.24]} />
-      </mesh>
-      <mesh position={[0.13, 0.05, 0.04]} castShadow material={materials.shoe}>
-        <boxGeometry args={[0.16, 0.08, 0.24]} />
-      </mesh>
-
-      <Html position={[0, 1.9, 0]} center distanceFactor={14} style={{ pointerEvents: 'none' }}>
+      <Html position={[0, 2.05, 0]} center distanceFactor={13} style={{ pointerEvents: 'none' }}>
         <div
           style={{
-            background: selected ? 'rgba(8,10,14,0.95)' : 'rgba(12,14,18,0.88)',
-            color: meta.color,
-            border: `1px solid ${selected ? '#ec4899' : 'rgba(255,255,255,0.14)'}`,
-            borderRadius: 10,
+            background: selected ? 'rgba(8,10,14,0.96)' : 'rgba(10,12,16,0.88)',
+            color: '#e8eaed',
+            border: `1px solid ${selected ? '#ec4899' : 'rgba(255,255,255,0.12)'}`,
+            borderRadius: 8,
             padding: '5px 10px',
             fontFamily: '"Segoe UI", system-ui, sans-serif',
-            fontWeight: 650,
-            fontSize: 12,
+            fontWeight: 600,
+            fontSize: 11,
             letterSpacing: 0.02,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            boxShadow: '0 10px 28px rgba(0,0,0,0.45)',
             whiteSpace: 'nowrap',
             display: 'flex',
             gap: 7,
             alignItems: 'center',
-            backdropFilter: 'blur(6px)',
+            backdropFilter: 'blur(8px)',
           }}
         >
           <span
             style={{
-              width: 8,
-              height: 8,
+              width: 7,
+              height: 7,
               borderRadius: '50%',
               background: meta.color,
-              boxShadow: `0 0 8px ${meta.color}`,
+              boxShadow: `0 0 10px ${meta.color}`,
             }}
           />
-          {agent.name}
-          <span style={{ opacity: 0.55, fontWeight: 500 }}>{meta.label}</span>
+          <span style={{ fontWeight: 700 }}>{agent.name}</span>
+          <span style={{ opacity: 0.5, fontWeight: 500 }}>{meta.label}</span>
         </div>
       </Html>
 
       {selected && (
-        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.5, 0.62, 48]} />
-          <meshBasicMaterial color="#ec4899" transparent opacity={0.9} />
+        <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.42, 0.52, 64]} />
+          <meshBasicMaterial color="#ec4899" transparent opacity={0.95} />
         </mesh>
       )}
     </group>
@@ -183,53 +250,64 @@ function animateStatus(
   },
 ) {
   const { root, torso, leftArm, rightArm, head, baseY } = parts;
-
   root.position.y = baseY;
   root.rotation.y = 0;
   if (torso) torso.rotation.set(0, 0, 0);
-  if (leftArm) leftArm.rotation.set(0, 0, 0);
-  if (rightArm) rightArm.rotation.set(0, 0, 0);
+  if (leftArm) leftArm.rotation.set(0, 0, 0.12);
+  if (rightArm) rightArm.rotation.set(0, 0, -0.12);
   if (head) head.rotation.set(0, 0, 0);
 
   switch (status) {
     case 'working': {
       const tap = (Math.sin(t * 9) + 1) * 0.5;
-      if (rightArm) rightArm.rotation.x = THREE.MathUtils.lerp(-0.15, 0.45, tap);
-      if (leftArm) leftArm.rotation.x = THREE.MathUtils.lerp(-0.05, 0.25, 1 - tap);
-      if (torso) torso.rotation.x = 0.1;
-      if (head) head.rotation.x = 0.12 + Math.sin(t * 1.5) * 0.03;
-      root.position.y = baseY + Math.sin(t * 4) * 0.01;
+      if (rightArm) rightArm.rotation.x = THREE.MathUtils.lerp(0.2, 0.85, tap);
+      if (leftArm) leftArm.rotation.x = THREE.MathUtils.lerp(0.15, 0.55, 1 - tap);
+      if (torso) torso.rotation.x = 0.14;
+      if (head) head.rotation.x = 0.18 + Math.sin(t * 1.4) * 0.03;
+      root.position.y = baseY + Math.sin(t * 3.5) * 0.008;
       break;
     }
     case 'idle': {
-      root.rotation.y = Math.sin(t * 0.8) * 0.12;
-      if (leftArm) leftArm.rotation.z = 0.25 + Math.sin(t * 1.3) * 0.15;
-      if (rightArm) rightArm.rotation.z = -0.2 + Math.sin(t * 1.1 + 1) * 0.08;
-      if (head) head.rotation.y = Math.sin(t * 0.9) * 0.18;
-      root.position.y = baseY + Math.sin(t * 1.6) * 0.015;
+      root.rotation.y = Math.sin(t * 0.7) * 0.1;
+      if (leftArm) leftArm.rotation.z = 0.2 + Math.sin(t * 1.2) * 0.12;
+      if (rightArm) rightArm.rotation.z = -0.18 + Math.sin(t * 1.0 + 1) * 0.08;
+      if (head) head.rotation.y = Math.sin(t * 0.85) * 0.2;
+      root.position.y = baseY + Math.sin(t * 1.5) * 0.012;
       break;
     }
     case 'blocked': {
-      root.position.x = Math.sin(t * 1.6) * 0.32;
-      root.rotation.y = Math.sin(t * 1.6) * 0.55;
-      if (leftArm) leftArm.rotation.x = Math.sin(t * 3.2) * 0.35;
-      if (rightArm) rightArm.rotation.x = -Math.sin(t * 3.2) * 0.35;
+      root.position.x = Math.sin(t * 1.5) * 0.28;
+      root.rotation.y = Math.sin(t * 1.5) * 0.5;
+      if (leftArm) leftArm.rotation.x = Math.sin(t * 3) * 0.4;
+      if (rightArm) rightArm.rotation.x = -Math.sin(t * 3) * 0.4;
       break;
     }
     case 'done': {
-      const pulse = (Math.sin(t * 2.2) + 1) * 0.5;
-      const up = THREE.MathUtils.lerp(0.35, 1.05, pulse);
+      const pulse = (Math.sin(t * 2.0) + 1) * 0.5;
+      const up = THREE.MathUtils.lerp(0.25, 0.95, pulse);
       if (leftArm) {
         leftArm.rotation.z = up;
-        leftArm.rotation.x = -0.25;
+        leftArm.rotation.x = -0.2;
       }
       if (rightArm) {
         rightArm.rotation.z = -up;
-        rightArm.rotation.x = -0.25;
+        rightArm.rotation.x = -0.2;
       }
-      if (head) head.rotation.x = -0.08;
-      root.position.y = baseY + pulse * 0.04;
+      if (head) head.rotation.x = -0.06;
+      root.position.y = baseY + pulse * 0.035;
       break;
     }
   }
+}
+
+function solidCloth(hex: string) {
+  return surface(hex, { roughness: 0.82, metalness: 0.02, envMapIntensity: 0.4 });
+}
+
+function shade(hex: string, factor: number): string {
+  const n = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, Math.max(0, Math.round(((n >> 16) & 255) * factor)));
+  const g = Math.min(255, Math.max(0, Math.round(((n >> 8) & 255) * factor)));
+  const b = Math.min(255, Math.max(0, Math.round((n & 255) * factor)));
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }

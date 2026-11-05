@@ -97,7 +97,7 @@ export default function App() {
           gl={{
             antialias: true,
             toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.15,
+            toneMappingExposure: 1.22,
             outputColorSpace: THREE.SRGBColorSpace,
           }}
           onPointerMissed={() => {
