@@ -10,6 +10,8 @@ export const zhTW: Record<string, string> = {
   'status.error': '錯誤',
   'status.tokens': '消耗 {count} tokens',
   'status.addAgent': '新增 Agent',
+  'bar.message': '傳訊息',
+  'bar.openCard': '角色卡',
 
   // ========== Agent 列表 ==========
   'agent.list': 'Agent 列表',

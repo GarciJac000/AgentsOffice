@@ -3,7 +3,6 @@ import { EventBus } from '../shared/events/EventBus';
 import { getAgentsCached, loadAgentRegistry } from '../shared/agentRegistry';
 import { AgentConfigPanel } from './AgentConfigPanel';
 import { AgentStatusBar } from './AgentStatusBar';
-import { ChatBox } from './ChatBox';
 import { DatabasePanel } from './DatabasePanel';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { t } from '../shared/i18n';
@@ -191,7 +190,6 @@ export const ReactOverlay: React.FC = () => {
       )}
 
       {sceneReady && <AgentStatusBar />}
-      {sceneReady && <ChatBox />}
     </>
   );
 };

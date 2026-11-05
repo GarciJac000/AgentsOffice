@@ -10,6 +10,8 @@ export const en: Record<string, string> = {
   'status.error': 'Error',
   'status.tokens': '{count} tokens used',
   'status.addAgent': 'Add new Agent',
+  'bar.message': 'Message',
+  'bar.openCard': 'Agent card',
 
   // ========== Agent List ==========
   'agent.list': 'Agent List',

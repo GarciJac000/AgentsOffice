@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { EventBus } from '../shared/events/EventBus';
 import { loadAgentRegistry, getAgentsCached, getPortraitUrl } from '../shared/agentRegistry';
 import { t } from '../shared/i18n';
+import { sendDirectMessage, type DirectReply } from './directMessage';
 
 // 模型名称显示映射 — 从 /api/v1/office/models 动态加载
 let MODEL_DISPLAY_NAMES: Record<string, string> = {};
@@ -43,15 +44,14 @@ function formatTokens(n: number): string {
 export const AgentStatusBar: React.FC = () => {
   // 展开/折叠状态
   const [expanded, setExpanded] = useState(false);
-
-  // ChatBox 宽度同步 — 信息卡不被聊天面板遮挡
-  const [chatBoxWidth, setChatBoxWidth] = useState(520);
-
-  useEffect(() => {
-    const onResize = (data: { width: number }) => setChatBoxWidth(data.width);
-    EventBus.on('chatbox:resize', onResize);
-    return () => { EventBus.off('chatbox:resize', onResize); };
-  }, []);
+  const [hoverSlug, setHoverSlug] = useState<string | null>(null);
+  const [menuSlug, setMenuSlug] = useState<string | null>(null);
+  const [composeSlug, setComposeSlug] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [threads, setThreads] = useState<Record<string, DirectReply[]>>({});
+  const [sendingSlug, setSendingSlug] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Agent 定义列表（从 agentRegistry 加载）
   const [agents, setAgents] = useState<AgentDef[]>(() =>
@@ -196,12 +196,48 @@ export const AgentStatusBar: React.FC = () => {
     }
   };
 
-  const handleCardClick = (agent: AgentDef) => {
+  const openCard = (agent: AgentDef) => {
+    setMenuSlug(null);
     EventBus.emit('agent:open-config', {
       agentSlug: agent.slug,
       agentName: agent.name,
       agentColor: agent.color,
     });
+  };
+
+  const focusComposer = (slug: string) => {
+    setComposeSlug(slug);
+    setMenuSlug(null);
+    window.setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const composerOpen = (slug: string) =>
+    hoverSlug === slug || composeSlug === slug || menuSlug === slug || sendingSlug === slug;
+
+  const sendDraft = async (agent: AgentDef) => {
+    const text = (drafts[agent.slug] || '').trim();
+    if (!text || sendingSlug) return;
+    setDrafts((prev) => ({ ...prev, [agent.slug]: '' }));
+    setSendError(null);
+    setComposeSlug(agent.slug);
+    setSendingSlug(agent.slug);
+    try {
+      await sendDirectMessage(agent.slug, text, (line) => {
+        setThreads((prev) => ({
+          ...prev,
+          [agent.slug]: [...(prev[agent.slug] || []), line].slice(-6),
+        }));
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Message failed';
+      setSendError(message);
+      setThreads((prev) => ({
+        ...prev,
+        [agent.slug]: [...(prev[agent.slug] || []), { role: 'system' as const, text: message }].slice(-6),
+      }));
+    } finally {
+      setSendingSlug(null);
+    }
   };
 
   // 将 agents 按每行 MAX_PER_ROW 分组
@@ -211,7 +247,7 @@ export const AgentStatusBar: React.FC = () => {
   }
 
   return (
-    <div style={{ ...styles.bar, right: chatBoxWidth + 16 }}>
+    <div style={styles.bar}>
       {/* 展开/折叠按钮 */}
       <div
         onClick={() => setExpanded(!expanded)}
@@ -232,10 +268,78 @@ export const AgentStatusBar: React.FC = () => {
             const isWorking = status === 'working';
             const totalTokens = tokens[agent.slug] || 0;
 
+            const open = composerOpen(agent.slug);
+            const thread = threads[agent.slug] || [];
             return (
               <div
                 key={agent.slug}
-                onClick={() => handleCardClick(agent)}
+                style={styles.slot}
+                onMouseEnter={() => setHoverSlug(agent.slug)}
+                onMouseLeave={() => setHoverSlug((current) => (current === agent.slug ? null : current))}
+              >
+                {open && (
+                  <div
+                    style={{ ...styles.popover, borderColor: agent.color }}
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    {menuSlug === agent.slug && (
+                      <div style={styles.choiceRow}>
+                        <button
+                          type="button"
+                          style={{ ...styles.choiceBtn, background: agent.color, color: '#111' }}
+                          onClick={() => focusComposer(agent.slug)}
+                        >
+                          {t('bar.message')}
+                        </button>
+                        <button
+                          type="button"
+                          style={styles.choiceBtn}
+                          onClick={() => openCard(agent)}
+                        >
+                          {t('bar.openCard')}
+                        </button>
+                      </div>
+                    )}
+                    {thread.length > 0 && (
+                      <div style={styles.thread}>
+                        {thread.map((line, i) => (
+                          <div key={i} style={{ color: line.role === 'user' ? '#e4e4e7' : '#f9a8d4' }}>
+                            {line.text}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <form
+                      style={styles.compose}
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        void sendDraft(agent);
+                      }}
+                    >
+                      <input
+                        ref={agent.slug === (composeSlug || hoverSlug) ? inputRef : undefined}
+                        value={drafts[agent.slug] || ''}
+                        onChange={(e) => {
+                          setComposeSlug(agent.slug);
+                          setDrafts((prev) => ({ ...prev, [agent.slug]: e.target.value }));
+                        }}
+                        onFocus={() => setComposeSlug(agent.slug)}
+                        placeholder={t('chat.inputPrivate', { agent: agent.name })}
+                        disabled={sendingSlug === agent.slug}
+                        style={styles.composeInput}
+                      />
+                      <button type="submit" disabled={sendingSlug === agent.slug} style={styles.sendBtn}>
+                        {sendingSlug === agent.slug ? '…' : t('chat.send')}
+                      </button>
+                    </form>
+                    {sendError && composeSlug === agent.slug && (
+                      <div style={styles.errorLine}>{sendError}</div>
+                    )}
+                  </div>
+                )}
+              <div
+                onClick={() => setMenuSlug(agent.slug)}
                 style={{
                   ...styles.card,
                   opacity: agent.active ? 1 : 0.7,
@@ -319,6 +423,7 @@ export const AgentStatusBar: React.FC = () => {
                   </div>
                 )}
               </div>
+              </div>
             );
           })}
         </div>
@@ -332,12 +437,86 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'absolute',
     bottom: 12,
     left: 12,
-    right: 376,
+    right: 12,
     display: 'flex',
     flexDirection: 'column',
     gap: 4,
     pointerEvents: 'auto',
     zIndex: 10,
+  },
+  slot: {
+    position: 'relative',
+    flex: '0 0 auto',
+  },
+  popover: {
+    position: 'absolute' as const,
+    left: 0,
+    bottom: 'calc(100% - 6px)',
+    width: 280,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 6,
+    padding: 8,
+    background: 'rgba(10, 10, 14, 0.96)',
+    border: '1.5px solid #ec4899',
+    borderRadius: 10,
+    boxShadow: '0 10px 28px rgba(0,0,0,0.45)',
+    zIndex: 20,
+  },
+  choiceRow: {
+    display: 'flex',
+    gap: 6,
+  },
+  choiceBtn: {
+    flex: 1,
+    border: '1px solid #3f3f46',
+    background: '#27272a',
+    color: '#fafafa',
+    borderRadius: 6,
+    padding: '6px 8px',
+    fontSize: 12,
+    fontWeight: 700,
+    cursor: 'pointer',
+    fontFamily: 'system-ui, sans-serif',
+  },
+  thread: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 4,
+    maxHeight: 96,
+    overflowY: 'auto' as const,
+    fontSize: 11,
+    lineHeight: 1.35,
+    fontFamily: 'system-ui, sans-serif',
+  },
+  compose: {
+    display: 'flex',
+    gap: 6,
+  },
+  composeInput: {
+    flex: 1,
+    minWidth: 0,
+    background: '#18181b',
+    color: '#fafafa',
+    border: '1px solid #3f3f46',
+    borderRadius: 6,
+    padding: '6px 8px',
+    fontSize: 12,
+    fontFamily: 'system-ui, sans-serif',
+  },
+  sendBtn: {
+    border: 'none',
+    background: '#ec4899',
+    color: '#fff',
+    borderRadius: 6,
+    padding: '6px 10px',
+    fontSize: 12,
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
+  errorLine: {
+    color: '#fca5a5',
+    fontSize: 11,
   },
   toggleBtn: {
     alignSelf: 'flex-end',

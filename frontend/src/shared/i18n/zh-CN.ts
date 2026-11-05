@@ -10,6 +10,8 @@ export const zhCN: Record<string, string> = {
   'status.error': '错误',
   'status.tokens': '消耗 {count} tokens',
   'status.addAgent': '添加新 Agent',
+  'bar.message': '发消息',
+  'bar.openCard': '角色卡',
 
   // ========== Agent 列表 ==========
   'agent.list': 'Agent列表',
