@@ -1,6 +1,6 @@
 # PRIM8 Productions office
 
-Claymation prototype of Jacob’s PRIM8 Productions studio inside AgentsOffice.
+3D studio prototype of Jacob’s PRIM8 Productions inside AgentsOffice.
 
 **Skydive source (roster inspiration):** https://www.skydive.com/o/eJJbcZSS5f5Gi3KrCi1u_g
 
@@ -12,18 +12,19 @@ Claymation prototype of Jacob’s PRIM8 Productions studio inside AgentsOffice.
 | Primary | `#0B0C0E` |
 | Secondary | `#F4F3EF` |
 | Accent | `#ec4899` (magenta `8`) |
-| UI chrome | Black / charcoal with pink accents |
+| UI chrome | Charcoal with pink accents |
 
 ## Visual design (current prototype)
 
-React + **React Three Fiber** + **drei** isometric / high-angle claymation diorama:
+React + **React Three Fiber** + **drei** isometric / high-angle office with a **video-game / PBR** look:
 
-- Chunky procedural clay puppets (thumbprint vertex displacement, matte clay materials)
-- Warm key + fill lighting, soft shadows
-- Stop-motion feel via stepped animation clock (~10 fps)
-- Orbit camera with zoom + pan; click room or character to focus
+- Smooth shaded characters (higher-segment capsules/spheres)
+- Material helpers for wood, paint, metal, glass, fabric, skin
+- HDRI `Environment`, hemisphere + key/fill lights, contact shadows
+- ACES Filmic tone mapping
+- Continuous (non–stop-motion) status animations
 
-Source: `frontend/src/App.tsx`, `frontend/src/claymation/`, mock seam `frontend/src/claymation/mockOffice.ts`.
+Source: `frontend/src/App.tsx`, `frontend/src/office/`, mock seam `frontend/src/office/mockOffice.ts`.
 
 ## Rooms & agents
 
@@ -48,4 +49,4 @@ Seed JSON (broader roster history): [`office/prim8/agents.json`](../office/prim8
 - Live agent / LLM connection
 - Office builder / editable layout
 - Meetings
-- Authored claymation GLB models (procedural shapes only in this pass)
+- Authored character GLBs (procedural figures for now)

@@ -18,7 +18,7 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #1a1510;
+  background: #0c1018;
   color: var(--prim8-paper);
   font-family: var(--font-ui);
 }
@@ -44,7 +44,7 @@ body,
   align-items: center;
   gap: 16px;
   padding: 10px 16px;
-  background: linear-gradient(180deg, #121015 0%, #0b0c0e 100%);
+  background: linear-gradient(180deg, #121722 0%, #0b0f16 100%);
   border-bottom: 1px solid var(--prim8-line);
   z-index: 2;
 }

@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import './styles/claymation.css';
+import './styles/office.css';
 
 const root = document.getElementById('root');
 if (!root) {
