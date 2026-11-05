@@ -1,8 +1,8 @@
 # PRIM8 Productions office
 
-Claymation prototype of Jacob’s PRIM8 Productions studio inside AgentsOffice.
+Default AgentsOffice roster + visual theme for Jacob’s PRIM8 Productions studio.
 
-**Skydive source (roster inspiration):** https://www.skydive.com/o/eJJbcZSS5f5Gi3KrCi1u_g
+**Skydive source:** https://www.skydive.com/o/eJJbcZSS5f5Gi3KrCi1u_g
 
 ## Brand
 
@@ -14,38 +14,59 @@ Claymation prototype of Jacob’s PRIM8 Productions studio inside AgentsOffice.
 | Accent | `#ec4899` (magenta `8`) |
 | UI chrome | Black / charcoal with pink accents |
 
-## Visual design (current prototype)
+## Visual design
 
-React + **React Three Fiber** + **drei** isometric / high-angle claymation diorama:
+The office is a **Three.js** interactive HQ. **Studio Floor (`workspace`)** is the cinematic showcase room (dark walnut / charcoal stone / smoked glass / bronze, PBR materials, architectural lighting). Surrounding zones keep the open-plan layout with a matched dark palette.
 
-- Chunky procedural clay puppets (thumbprint vertex displacement, matte clay materials)
-- Warm key + fill lighting, soft shadows
-- Stop-motion feel via stepped animation clock (~10 fps)
-- Orbit camera with zoom + pan; click room or character to focus
+**Cameras:** overhead orthographic (default) + first-person walkthrough (`V` or HUD button). Desktop: WASD + pointer lock. Touch: left stick move / right stick look.
 
-Source: `frontend/src/App.tsx`, `frontend/src/claymation/`, mock seam `frontend/src/claymation/mockOffice.ts`.
+**Quality:** progressive presets (`frontend/src/three/quality.ts`) — shadow map size, DPR, FXAA, env intensity.
 
-## Rooms & agents
+Inspired by the Skydive / Gather open floor plan:
 
-| Agent | Role | Room |
-|-------|------|------|
-| Aria | A&R Manager | Corner office overlooking studio floor |
-| Simone | Catalog Manager | Desk by shelves (songs, masters, rights) |
-| Spike | Music Video Director | Screening room, storyboard wall, large monitor |
-| Dre | Music Production | Recording studio, mixing board, booth |
-| Shakir | Promotion Strategy | War room, whiteboard, social numbers screen |
+| Zone | Room id | Notes |
+|------|---------|-------|
+| Creative Wall | `showroom` | Left wall shelves, posters, runner rug, plants |
+| Control | `manager` | Back-wall desks under neon PRIM8 video wall |
+| Lounge | `meeting` | Sofa, coffee table, round rug |
+| Studio Floor | `workspace` | Center 2×2 desk cluster on zone rug |
+| Kitchen / Edit | `datacenter` | Fridge, counter, dining/edit table, vending |
 
-States: `idle` | `working` | `blocked` | `done`.
+Agents use **authored claymation GLB models** (`frontend/public/assets/models/agents/`), loaded via `GLTFLoader` in `frontend/src/three/avatars.ts`:
 
-## Mock → backend seam
+| GLB | Look | Agents |
+|-----|------|--------|
+| `01_pink_creative.glb` | creative | SIMONE |
+| `02_blue_cinematographer.glb` | cinematographer | DRE, SPIKE |
+| `03_purple_director.glb` | director | Jarvis, SHAKIR |
+| `04_green_strategist.glb` | strategist | ARIA, Dispatcher |
+| `05_orange_producer.glb` | producer | Echo, Data Engineer |
 
-`getMockOffice()` returns the typed `OfficeMock` payload. Replace that function (or point it at `/api/...`) without changing the scene or panel consumers.
+Models are Z-up; the loader rotates to Y-up, plants feet on the floor, and scales to ~2.35 world units. Walk/idle uses root bob + sway (no skeletal clips in the GLBs). Portrait cards still power the React UI (`assets/portraits/{slug}.jpg`).
 
-Seed JSON (broader roster history): [`office/prim8/agents.json`](../office/prim8/agents.json)
+Source: `frontend/src/three/` (`OfficeApp.ts`, `buildOffice.ts`, `agents.ts`, `avatars.ts`, `rooms.ts`).
 
-## Out of scope (for now)
+## Agents
 
-- Live agent / LLM connection
-- Office builder / editable layout
-- Meetings
-- Authored claymation GLB models (procedural shapes only in this pass)
+Seed JSON: [`office/prim8/agents.json`](../office/prim8/agents.json)  
+Runtime builtins: [`app/services/agents/definitions.py`](../app/services/agents/definitions.py)
+
+| Slug | Name | Skydive key | Role (reconstructed) |
+|------|------|-------------|----------------------|
+| jarvis | Jarvis | `htpkcE2QxtLvKLGr` | Office lead & coordinator |
+| aria | ARIA | `6xrZYE9ftwk_Ech8` | A&R / creative repertoire |
+| simone | SIMONE | `ntTz4BSeF99z5fO1` | Creative direction & artist development |
+| spike | SPIKE | `vb5E_z_Jtl3BXJKw` | Session producer & project momentum |
+| dre | DRE | `DsXigmtVdNH3gz0P` | Music / audio producer |
+| shakir | SHAKIR | `AkG94XdD2l45INO3` | Performance & release operations |
+| echo | Echo | `TxqDpLuTSAj9daFX` | Mix / sound & signal chain |
+| data_engineer | Data Engineer | — | AgentsOffice file/SQL tooling (retained) |
+
+Names, keys, and avatars come from Skydive `GET /api/v2/public/offices?token=…`.  
+**Roles and system prompts were not exportable** from the public share API.
+
+## Gaps vs Skydive
+
+- No true 3D isometric GLB interior (Phaser orthogonal tilemap approximating the open plan)
+- No Skydive-native routines engine, hosted apps, or OAuth integrations
+- No verified original system prompts from the PRIM8 org

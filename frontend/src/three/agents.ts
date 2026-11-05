@@ -35,19 +35,21 @@ function makeNamePill(name: string, height: number): CSS2DObject {
   const el = document.createElement('div');
   el.textContent = name;
   el.style.cssText = `
-    background: #fff;
-    color: #111;
-    font: 700 11px system-ui, sans-serif;
-    padding: 3px 10px;
-    border-radius: 999px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.22);
-    white-space: nowrap;
+    background: rgba(12,12,16,0.88);
+    color: #f4f3ef;
+    font: 600 11px system-ui, sans-serif;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(176,141,87,0.55);
     border-bottom: 2px solid #ec4899;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    white-space: nowrap;
     pointer-events: none;
     user-select: none;
+    letter-spacing: 0.02em;
   `;
   const obj = new CSS2DObject(el);
-  obj.position.set(0, height + 0.22, 0);
+  obj.position.set(0, height + 0.18, 0);
   return obj;
 }
 
@@ -74,15 +76,18 @@ function makeRoomLabel(text: string, pos: Spot3D): CSS2DObject {
   const el = document.createElement('div');
   el.textContent = text;
   el.style.cssText = `
-    color: #ec4899;
-    font: 700 12px system-ui, sans-serif;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.45);
-    letter-spacing: 0.4px;
+    color: #e8e0d4;
+    font: 600 11px system-ui, sans-serif;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.75);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     pointer-events: none;
-    opacity: 0.9;
+    opacity: 0.7;
+    border-bottom: 1px solid rgba(236,72,153,0.55);
+    padding-bottom: 2px;
   `;
   const obj = new CSS2DObject(el);
-  obj.position.set(pos.x, 0.05, pos.z);
+  obj.position.set(pos.x, 0.06, pos.z);
   return obj;
 }
 

@@ -1,15 +1,23 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import './styles/claymation.css';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { ReactOverlay } from './react/ReactOverlay';
+import { startOfficeApp } from './three/OfficeApp';
 
-const root = document.getElementById('root');
-if (!root) {
-  throw new Error('Missing #root mount node');
+const gameContainer = document.getElementById('game-container');
+if (gameContainer) {
+  gameContainer.style.position = 'absolute';
+  gameContainer.style.inset = '0';
+  gameContainer.style.overflow = 'hidden';
+  startOfficeApp(gameContainer).catch((err) => {
+    console.error('[PRIM8] Failed to start 3D office', err);
+  });
 }
 
-createRoot(root).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+const uiRoot = document.getElementById('ui-overlay');
+if (uiRoot) {
+  ReactDOM.createRoot(uiRoot).render(
+    <React.StrictMode>
+      <ReactOverlay />
+    </React.StrictMode>,
+  );
+}

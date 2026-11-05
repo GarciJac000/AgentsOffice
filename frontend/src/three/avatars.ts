@@ -29,8 +29,8 @@ const LOOK_MODEL: Record<AvatarLook, string> = {
   producer: '05_orange_producer.glb',
 };
 
-/** Target on-floor height so claymation figures read next to ~0.72 desks. */
-const TARGET_HEIGHT = 2.35;
+/** Humanlike standing height relative to ~0.76m desks. */
+const TARGET_HEIGHT = 1.82;
 
 export interface AvatarParts {
   root: THREE.Group;
@@ -83,9 +83,11 @@ function prepareTemplate(scene: THREE.Object3D): THREE.Group {
       mat.side = THREE.FrontSide;
       const std = mat as THREE.MeshStandardMaterial;
       std.vertexColors = true;
-      std.metalness = 0.08;
-      std.roughness = 0.88;
-      std.flatShading = true;
+      std.metalness = 0.12;
+      std.roughness = 0.72;
+      // Soft shading reads better under cinematic PBR lights (still claymation meshes)
+      std.flatShading = false;
+      std.envMapIntensity = 0.45;
       if (std.map) std.map.colorSpace = THREE.SRGBColorSpace;
       std.needsUpdate = true;
     }
@@ -99,13 +101,35 @@ function loadTemplate(file: string): Promise<THREE.Group> {
   if (cached) return cached;
 
   const promise = new Promise<THREE.Group>((resolve, reject) => {
+    let settled = false;
+    const timer = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error(`[avatars] timeout loading ${file}`));
+    }, 12000);
+
     loader.load(
       modelUrl(file),
-      (gltf) => resolve(prepareTemplate(gltf.scene)),
+      (gltf) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        resolve(prepareTemplate(gltf.scene));
+      },
       undefined,
-      reject,
+      (err) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        reject(err);
+      },
     );
+  }).catch((err) => {
+    // Drop failed cache entry so a later agent can retry / fall back cleanly
+    templateCache.delete(file);
+    throw err;
   });
+
   templateCache.set(file, promise);
   return promise;
 }
