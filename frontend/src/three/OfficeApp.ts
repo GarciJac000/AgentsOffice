@@ -28,7 +28,6 @@ export class OfficeApp {
   private lastY = 0;
   private downX = 0;
   private downY = 0;
-  private chatInset = 520;
   private container: HTMLElement;
 
   constructor(container: HTMLElement) {
@@ -75,8 +74,6 @@ export class OfficeApp {
 
     this.bindInput();
     window.addEventListener('resize', this.onResize);
-
-    EventBus.on('chatbox:resize', this.onChatResize);
   }
 
   async start() {
@@ -94,7 +91,6 @@ export class OfficeApp {
     cancelAnimationFrame(this.raf);
     this.agents?.dispose();
     window.removeEventListener('resize', this.onResize);
-    EventBus.off('chatbox:resize', this.onChatResize);
     this.renderer.dispose();
     this.container.innerHTML = '';
   }
@@ -149,7 +145,7 @@ export class OfficeApp {
   }
 
   private viewWidth() {
-    return Math.max(320, window.innerWidth - this.chatInset);
+    return Math.max(320, window.innerWidth);
   }
 
   private viewHeight() {
@@ -177,11 +173,6 @@ export class OfficeApp {
   private onResize = () => {
     this.updateFrustum();
     this.placeCamera();
-  };
-
-  private onChatResize = (data: { width: number }) => {
-    this.chatInset = data.width || 520;
-    this.onResize();
   };
 
   private bindInput() {

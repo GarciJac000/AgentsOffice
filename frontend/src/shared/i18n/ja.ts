@@ -10,6 +10,8 @@ export const ja: Record<string, string> = {
   'status.error': 'エラー',
   'status.tokens': '{count} トークン消費',
   'status.addAgent': '新しいエージェントを追加',
+  'bar.message': 'メッセージ',
+  'bar.openCard': 'カード',
 
   // ========== エージェント一覧 ==========
   'agent.list': 'エージェント一覧',
